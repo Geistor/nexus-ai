@@ -1,0 +1,10 @@
+This v19 package extends v18 with:
+- venue-specific max exposure
+- venue-specific fee model
+- partial fill tracking scaffold
+- arbitrage hedge-leg execution scaffold
+- private WebSocket order stream scaffold per venue
+
+Important:
+Private venue-authenticated WebSocket streams are included as scaffolding/normalizers.
+They still need real API-auth handshake wiring before production use.

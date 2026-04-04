@@ -1,0 +1,5 @@
+Render javított teljes verzió.
+Javítások:
+1. backend/services/state.js -> hiányzó path import hozzáadva
+2. backend/index.js -> loadModel helyett loadActiveModel használat
+Ez a teljes verzió, nem a light csomag.

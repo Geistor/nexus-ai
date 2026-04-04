@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS AI v18 AutoLearn</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><div class="logo">⚡</div><div><div class="title">NEXUS AI v18 AutoLearn</div><div class="sub">TradingView chart · auto-train · promotion gate · journal-based learning</div></div></div>
+    <div class="btns"><a href="/trade-journal.html" style="text-decoration:none"><button class="s">Trade napló</button></a>
+      <button class="p" onclick="act('/api/bot/start')">Indítás</button>
+      <button class="s" onclick="act('/api/bot/stop')">Leállítás</button>
+      <button class="r" onclick="act('/api/bot/reset-kill-switch')">Vészleállító visszaállítása</button>
+      <button class="s" onclick="act('/api/training/run')">Tanítás futtatása</button>
+      <button class="s" onclick="act('/api/maintenance/retention-run')">Adatkarbantartás</button>
+      <button class="s" onclick="keszitPersistenciaSnapshotot()">AI mentés</button>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card s3"><div class="label">Tőkeérték</div><div class="metric" id="equity">-</div><div id="pnlDay" class="muted">-</div></div>
+    <div class="card s3"><div class="label">Modell</div><div class="metric" id="modelState">-</div><div id="modelInfo" class="muted">-</div></div>
+    <div class="card s3"><div class="label">Bot</div><div style="margin-top:10px"><span class="pill" id="botState"><span class="dot rr"></span> OFF</span><span class="pill" id="killState"><span class="dot g"></span> SAFE</span></div></div>
+    <div class="card s3"><div class="label">Találati arány</div><div class="metric" id="winRate">-</div><div id="tradeCount" class="muted">-</div></div>
+
+
+    <div class="card s12">
+      <div class="row">
+        <div>
+          <div class="label">Tőzsdei kapcsolatok</div>
+          <div class="muted">Jelentkezz be egyszerre több tőzsdére. A kulcsok csak a futó backend memóriájában maradnak, és nem kerülnek bele a ZIP fájlba.</div>
+        </div>
+      </div>
+      <div class="exchange-grid">
+        <div class="exchange-box">
+          <div class="exchange-title">Binance</div>
+          <input id="binance_apiKey" placeholder="API kulcs" />
+          <input id="binance_apiSecret" type="password" placeholder="API titok" />
+          <select id="binance_marketType"><option value="future">Futures</option><option value="spot">Spot</option></select><select id="binance_marginMode"><option value="isolated">Izolált</option><option value="cross">Cross</option></select><input id="binance_leverage" type="number" value="3" placeholder="Tőkeáttétel" />
+          <label class="checkline"><input id="binance_sandbox" type="checkbox" /> Tesztkörnyezet</label>
+          <div class="exchange-actions">
+            <button class="p" onclick="connectExchange('binance')">Csatlakozás</button>
+            <button class="s" onclick="disconnectExchange('binance')">Kapcsolat bontása</button>
+          </div>
+          <div class="muted" id="binance_status">Nincs csatlakozva</div>
+        </div>
+        <div class="exchange-box">
+          <div class="exchange-title">OKX</div>
+          <input id="okx_apiKey" placeholder="API kulcs" />
+          <input id="okx_apiSecret" type="password" placeholder="API titok" />
+          <input id="okx_passphrase" type="password" placeholder="Jelszó-kifejezés" />
+          <select id="okx_marketType"><option value="future">Futures</option><option value="spot">Spot</option></select><select id="okx_marginMode"><option value="cross">Cross</option><option value="isolated">Izolált</option></select><input id="okx_leverage" type="number" value="3" placeholder="Tőkeáttétel" />
+          <label class="checkline"><input id="okx_sandbox" type="checkbox" /> Tesztkörnyezet</label>
+          <div class="exchange-actions">
+            <button class="p" onclick="connectExchange('okx')">Csatlakozás</button>
+            <button class="s" onclick="disconnectExchange('okx')">Kapcsolat bontása</button>
+          </div>
+          <div class="muted" id="okx_status">Nincs csatlakozva</div>
+        </div>
+        <div class="exchange-box">
+          <div class="exchange-title">Bybit</div>
+          <input id="bybit_apiKey" placeholder="API kulcs" />
+          <input id="bybit_apiSecret" type="password" placeholder="API titok" />
+          <select id="bybit_marketType"><option value="future">Futures</option><option value="spot">Spot</option></select><select id="bybit_marginMode"><option value="cross">Cross</option><option value="isolated">Izolált</option></select><input id="bybit_leverage" type="number" value="3" placeholder="Tőkeáttétel" />
+          <label class="checkline"><input id="bybit_sandbox" type="checkbox" /> Tesztkörnyezet</label>
+          <div class="exchange-actions">
+            <button class="p" onclick="connectExchange('bybit')">Csatlakozás</button>
+            <button class="s" onclick="disconnectExchange('bybit')">Kapcsolat bontása</button>
+          </div>
+          <div class="muted" id="bybit_status">Nincs csatlakozva</div>
+        </div>
+        <div class="exchange-box">
+          <div class="exchange-title">Kraken</div>
+          <input id="kraken_apiKey" placeholder="API kulcs" />
+          <input id="kraken_apiSecret" type="password" placeholder="API titok" />
+          <select id="kraken_marketType"><option value="spot">Spot</option><option value="future">Futures</option></select><select id="kraken_marginMode"><option value="cross">Cross</option><option value="isolated">Izolált</option></select><input id="kraken_leverage" type="number" value="2" placeholder="Tőkeáttétel" />
+          <label class="checkline"><input id="kraken_sandbox" type="checkbox" /> Tesztkörnyezet</label>
+          <div class="exchange-actions">
+            <button class="p" onclick="connectExchange('kraken')">Csatlakozás</button>
+            <button class="s" onclick="disconnectExchange('kraken')">Kapcsolat bontása</button>
+          </div>
+          <div class="muted" id="kraken_status">Nincs csatlakozva</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card s8"><div class="row"><div><div class="label">TradingView-style price chart</div><div class="muted">Candles + EMA overlays + markers</div></div><div style="display:flex;gap:10px;align-items:center;"><select id="chartSzimbólum" onchange="loadChart()"></select><select id="chartIdőframe" onchange="loadChart()"><option value="1m">1m</option><option value="5m">5m</option><option value="15m">15m</option><option value="1h">1h</option></select><span class="pill" id="chartStatus">-</span></div></div><div id="tvchart"></div></div>
+    <div class="card s4"><div class="label">AI döntések</div><div id="decisions"></div></div>
+    <div class="card s6"><div class="label">Nyitott pozíciók</div><div id="positions"></div></div>
+    <div class="card s6"><div class="label">Latency stats</div><div id="latency"></div></div>
+    <div class="card s12"><div class="label">Arbitrázs klaszter</div><table><thead><tr><th>Szimbólum</th><th>Buy</th><th>Sell</th><th>Gross</th><th>Net</th></tr></thead><tbody id="arb"></tbody></table></div>
+    <div class="card s6"><div class="label">Tanítás állapota</div><div id="trainingBox" class="log"></div></div>
+    <div class="card s6"><div class="label">Riasztások</div><div id="alerts" class="log"></div></div>
+    <div class="card s6"><div class="label">Naplók</div><div id="logs" class="log"></div></div>
+    <div class="card s12"><div class="label">Lezárt kötések</div><table><thead><tr><th>Idő</th><th>Szimbólum</th><th>Irány</th><th>Belépő</th><th>Kilépő</th><th>PnL</th><th>Ok</th></tr></thead><tbody id="trades"></tbody></table></div>
+  </div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
