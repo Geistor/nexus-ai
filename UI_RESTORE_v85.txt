@@ -1,0 +1,23 @@
+NEXUS v85 UI Restore
+
+Mi van ebben a csomagban:
+- a klasszikus NEXUS felület visszaállítva (frontend a korábbi teljes dashboard vonalból)
+- Render deployhoz render.yaml hozzáadva
+- Supabase / persistence env minta megtartva
+
+Használat:
+1. Töröld a repo jelenlegi fájljait, vagy egy új branch/repo fölé töltsd fel ezt.
+2. Ügyelj rá, hogy a gyökérben legyen a backend/, frontend/, model/ mappa.
+3. Renderen:
+   - Build Command: npm install
+   - Start Command: node backend/index.js
+   - Root Directory: üresen hagyni
+4. Environment változók:
+   - PORT = 10000 (nem kötelező, Render adja)
+   - TRADING_MODE = paper
+   - SUPABASE_URL
+   - SUPABASE_SERVICE_KEY
+   - opcionálisan exchange kulcsok
+
+Megjegyzés:
+Ez a csomag elsődlegesen a régi UI visszaállítására készült.

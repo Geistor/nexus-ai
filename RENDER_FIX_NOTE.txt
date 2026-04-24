@@ -1,0 +1,3 @@
+Ez a teljes verzió javítva lett a Render hibához.
+Javítás: backend/services/state.js fájlban a path import hozzáadva.
+Ez NEM a light verzió, hanem a teljes v31 javított csomagja.

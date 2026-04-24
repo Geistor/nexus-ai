@@ -1,0 +1,9 @@
+NEXUS v100
+
+Included baseline:
+- audit log flow
+- position sync layer
+- emergency risk guard
+- real execution engine base
+
+This package is built from the latest v99 bundle with internal version bump and packaging cleanup for v100 release.

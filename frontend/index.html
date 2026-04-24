@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEXUS AI v18 AutoLearn</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div>
+          <div class="title">NEXUS AI v18 AutoLearn</div>
+          <div class="sub">Egyszerűsített operator felület • profi workflow • AI tuning • portfolio manager</div>
+        </div>
+      </div>
+      <div class="btns compact-tools">
+        <button id="fixModeBtn" class="s">Fix mód</button>
+        <button id="proModeBtn" class="s">Pro mód</button>
+        <button id="startBtn" class="p">Indítás</button>
+        <button id="stopBtn" class="s">Leállítás</button>
+        <button id="emergencyBtn" class="r">Vész stop</button>
+      </div>
+    </header>
+
+    <section class="status-strip">
+      <div class="status-item"><span class="label">Utolsó művelet</span><strong id="lastActionVal">-</strong></div>
+      <div class="status-item"><span class="label">Supabase</span><strong id="supabaseVal">ellenőrzés...</strong></div>
+      <div class="status-item"><span class="label">Readiness</span><strong id="readinessVal">-</strong></div>
+      <div class="status-item"><span class="label">Utolsó mentés</span><strong id="lastSaveVal">-</strong></div>
+    </section>
+
+    <section class="grid">
+      <div class="card s12 hero-card">
+        <div class="hero-grid">
+          <div>
+            <div class="label">1 gombos működési mód</div>
+            <div class="segmented" id="modeSwitcher">
+              <button class="seg active" data-stage="paper" data-mode="paper_safe">Safe</button>
+              <button class="seg" data-stage="paper" data-mode="paper">Paper</button>
+              <button class="seg" data-stage="staging" data-mode="paper">Staging</button>
+              <button class="seg" data-stage="live" data-mode="live">Live</button>
+            </div>
+            <div class="hero-help">A rendszer a kiválasztott profil szerint állítja a stage-et és a risk viselkedést.</div>
+          </div>
+          <div>
+            <div class="label">AI tuning (profit max)</div>
+            <div class="segmented" id="tuningSwitcher">
+              <button class="seg" data-tuning="safe">Safe AI</button>
+              <button class="seg active" data-tuning="balanced">Balanced</button>
+              <button class="seg profit" data-tuning="profit_max">Profit Max</button>
+            </div>
+            <div class="hero-help" id="tuningHint">Balanced: stabil növekedés és kontrollált kockázat.</div>
+          </div>
+          <div>
+            <div class="label">Portfolio manager full upgrade</div>
+            <div class="segmented" id="portfolioSwitcher">
+              <button class="seg" data-profile="conservative">Konzervatív</button>
+              <button class="seg active" data-profile="balanced">Balanced</button>
+              <button class="seg" data-profile="aggressive">Agresszív</button>
+            </div>
+            <div class="hero-help" id="portfolioHint">Balanced: egyenletes tőkeelosztás több venue között.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card s3">
+        <div class="label">Tőkeérték</div>
+        <div class="metric" id="equityVal">-</div>
+        <div class="muted" id="equitySub">Összesített account equity</div>
+      </div>
+      <div class="card s3">
+        <div class="label">AI állapot</div>
+        <div class="metric" id="modelVal">-</div>
+        <div class="muted" id="modelSub">Aktív tuning preset</div>
+      </div>
+      <div class="card s3">
+        <div class="label">Bot</div>
+        <div class="metric" id="botVal">OFF</div>
+        <div class="muted" id="botSub">Védelmi állapot betöltése...</div>
+      </div>
+      <div class="card s3">
+        <div class="label">Találati arány</div>
+        <div class="metric" id="hitVal">-</div>
+        <div class="muted" id="hitSub">AI confidence / winrate</div>
+      </div>
+
+      <div class="card s6">
+        <div class="row"><strong>AI tuning központ</strong><span class="pill"><span class="dot g"></span><span id="aiPresetPill">balanced</span></span></div>
+        <div class="kv blocks" id="aiTuningPanel"></div>
+      </div>
+      <div class="card s6">
+        <div class="row"><strong>Portfolio manager</strong><span class="pill"><span class="dot g"></span><span id="portfolioProfilePill">balanced</span></span></div>
+        <div class="kv blocks" id="portfolioPanel"></div>
+      </div>
+
+      <div class="card s8">
+        <div class="row"><strong>AI magyarázó panel</strong><button id="refreshExplainBtn" class="s mini">Frissítés</button></div>
+        <div id="aiExplainPanel" class="magyarazat">Betöltés...</div>
+      </div>
+      <div class="card s4">
+        <div class="row"><strong>Incident center</strong><button id="refreshLogsBtn" class="s mini">Frissítés</button></div>
+        <div id="incidentPanel" class="log"></div>
+      </div>
+
+
+      <div class="card s6">
+        <div class="row"><strong>Akció előzmények</strong><button id="refreshHistoryBtn" class="s mini">Frissítés</button></div>
+        <div id="historyPanel" class="log rich-log"></div>
+      </div>
+      <div class="card s6">
+        <div class="row"><strong>Model registry / mentések</strong><button id="refreshModelsBtn" class="s mini">Frissítés</button></div>
+        <div id="modelsPanel" class="log rich-log"></div>
+      </div>
+
+      <div class="card s12 proof-card">
+        <div class="row proof-header">
+          <div>
+            <strong>Kapcsolat / market proof</strong>
+            <div class="muted">Bizonyítja, hogy a bot eléri-e a tőzsdei API-t, auth működik-e, és érkezik-e market adat.</div>
+          </div>
+          <div class="btns">
+            <select id="proofVenue" class="proof-select">
+              <option value="binance">Binance</option>
+              <option value="okx">OKX</option>
+              <option value="bybit">Bybit</option>
+              <option value="kraken">Kraken</option>
+            </select>
+            <input id="proofSymbol" class="proof-symbol" value="BTC/USDT" />
+            <button id="proofRefreshBtn" class="s mini">Frissítés / proof</button>
+            <button id="tradeTestBtn" class="s mini">Trade teszt DRY_RUN</button>
+          </div>
+        </div>
+        <div id="proofPanel" class="proof-panel"><p>Nincs még proof adat.</p></div>
+        <pre id="tradeTestOutput" class="copy-area small-copy">Még nincs trade teszt.</pre>
+      </div>
+
+      <div class="card s12 error-card">
+        <div class="row">
+          <div>
+            <strong>Hibanapló / kimásolható hibák</strong>
+            <div class="muted">A jobb alsó hibák és backend hibák teljes szövege itt visszanézhető és kimásolható.</div>
+          </div>
+          <div class="btns">
+            <button id="refreshErrorsBtn" class="s mini">Frissítés</button>
+            <button id="copyErrorsBtn" class="s mini">Másolás</button>
+            <button id="clearErrorsBtn" class="s mini">Törlés</button>
+          </div>
+        </div>
+        <textarea id="errorCopyArea" class="copy-area" readonly>Nincs még rögzített hiba.</textarea>
+        <div id="errorPanel" class="log rich-log"></div>
+      </div>
+
+      <div class="card s12">
+        <div class="row">
+          <div>
+            <strong>Eszközök és haladó műveletek</strong>
+            <div class="muted">Ritkábban használt gombok külön helyre rendezve.</div>
+          </div>
+          <div class="btns">
+            <button id="syncBtn" class="s">Távoli sync</button>
+            <button id="trainBtn" class="s">Tanítás futtatása</button>
+            <button id="maintBtn" class="s">Adatkarbantartás</button>
+            <button id="saveAiBtn" class="s">AI mentés</button>
+            <button id="logBtn" class="s">Trade napló</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card s12">
+        <details>
+          <summary><strong>Tőzsdei kapcsolatok</strong> <span class="muted">— bejelentkezés, mentés és teszt venue-nként</span></summary>
+          <div class="venues-grid">
+            <article class="venue-card" data-venue-card="binance">
+              <div class="venue-head"><h3>Binance</h3><span class="venue-badge" data-venue-status="binance">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="binance" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="binance" />
+                <select data-venue-field="marketType" data-venue="binance"><option value="futures">Futures</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="binance"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="binance" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="binance" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="binance">Mentés</button><button class="s mini" data-venue-test="binance">Teszt</button><button class="s mini" data-venue-clear="binance">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="okx">
+              <div class="venue-head"><h3>OKX</h3><span class="venue-badge" data-venue-status="okx">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="okx" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="okx" />
+                <input type="password" placeholder="Jelszó-kifejezés" data-venue-field="passphrase" data-venue="okx" />
+                <select data-venue-field="marketType" data-venue="okx"><option value="futures">Futures</option><option value="swap">Swap</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="okx"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="okx" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="okx" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="okx">Mentés</button><button class="s mini" data-venue-test="okx">Teszt</button><button class="s mini" data-venue-clear="okx">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="bybit">
+              <div class="venue-head"><h3>Bybit</h3><span class="venue-badge" data-venue-status="bybit">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="bybit" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="bybit" />
+                <select data-venue-field="marketType" data-venue="bybit"><option value="futures">Futures</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="bybit"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="bybit" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="bybit" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="bybit">Mentés</button><button class="s mini" data-venue-test="bybit">Teszt</button><button class="s mini" data-venue-clear="bybit">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="kraken">
+              <div class="venue-head"><h3>Kraken</h3><span class="venue-badge" data-venue-status="kraken">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="kraken" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="kraken" />
+                <select data-venue-field="marketType" data-venue="kraken"><option value="spot">Spot</option><option value="futures">Futures</option></select>
+                <select data-venue-field="marginMode" data-venue="kraken"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="kraken" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="kraken" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="kraken">Mentés</button><button class="s mini" data-venue-test="kraken">Teszt</button><button class="s mini" data-venue-clear="kraken">Törlés</button></div>
+              </div>
+            </article>
+          </div>
+        </details>
+
+        <details class="panel collapse" open>
+          <summary>Real execution engine</summary>
+          <div class="grid grid-2">
+            <div>
+              <div class="kv"><span>Engine mód</span><strong id="executionMode">-</strong></div>
+              <div class="kv"><span>Workflow stage</span><strong id="executionStage">-</strong></div>
+              <div class="kv"><span>Bot</span><strong id="executionBot">-</strong></div>
+              <div class="kv"><span>Venue-k</span><strong id="executionVenues">-</strong></div>
+              <div class="venue-form" style="margin-top:14px;">
+                <select id="execVenue"></select>
+                <input id="execSymbol" value="BTC/USDT" />
+                <select id="execSide"><option value="buy">BUY</option><option value="sell">SELL</option></select>
+                <select id="execType"><option value="market">Market</option></select>
+                <input id="execAmount" type="number" min="0" step="0.001" value="0.001" />
+                <label class="checkline"><input id="execReduceOnly" type="checkbox" /> reduceOnly</label>
+                <div class="venue-actions"><button class="s mini" id="executionRefresh">Frissítés</button><button class="s mini" id="execSubmit">Order küldése</button></div>
+              </div>
+            </div>
+            <div>
+              <pre id="executionOutput">Még nincs execution válasz.</pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+<style>.venues-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px}.venue-card{border:1px solid rgba(122,164,255,.18);border-radius:18px;padding:16px;background:rgba(12,24,46,.55)}.venue-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.venue-head h3{margin:0;font-size:24px}.venue-badge{padding:6px 10px;border-radius:999px;border:1px solid rgba(122,164,255,.22);font-size:12px;color:#9db9ff}.venue-form{display:grid;gap:10px}.venue-form input,.venue-form select{width:100%;background:#0f1e39;color:#fff;border:1px solid rgba(122,164,255,.16);border-radius:12px;padding:12px 14px;font-size:16px}.venue-actions{display:flex;gap:10px;flex-wrap:wrap}</style></body>
+</html>
