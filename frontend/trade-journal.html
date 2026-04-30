@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS AI - Trade napló</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    body{background:#08101d;color:#ebf3ff;font-family:Inter,Arial,sans-serif;margin:0}
+    .wrap{max-width:1500px;margin:0 auto;padding:24px}
+    .fejlec{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
+    .kartya{background:#101a2b;border:1px solid #223553;border-radius:18px;padding:16px}
+    .szurok{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    input,select{background:#142034;border:1px solid #223553;color:#ebf3ff;padding:10px 12px;border-radius:10px}
+    button{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;background:#1fe1ff;color:#06111f}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px;vertical-align:top}
+    th{font-size:11px;text-transform:uppercase;color:#8da4c8}
+    .mini{background:#142034;color:#ebf3ff;border:1px solid #223553;padding:7px 10px;font-size:12px}
+    .elemzes{margin-top:8px;padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03);white-space:pre-wrap}
+    @media(max-width:1000px){.szurok{grid-template-columns:1fr 1fr}}
+    @media(max-width:700px){.szurok{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="fejlec">
+    <div>
+      <h1 style="margin:0;font-size:28px">Trade napló és elemző</h1>
+      <div style="color:#8da4c8">Szűrés, visszanézés és opcionális AI trade elemzés</div>
+    </div>
+    <div><a href="/" style="color:#1fe1ff;text-decoration:none">← Vissza a főoldalra</a></div>
+  </div>
+
+  <div class="kartya">
+    <div class="szurok">
+      <input id="symbolSzuro" placeholder="Szimbólum szűrése" />
+      <input id="venueSzuro" placeholder="Tőzsde szűrése" />
+      <select id="sideSzuro">
+        <option value="">Minden irány</option>
+        <option value="BUY">Vétel</option>
+        <option value="SELL">Eladás / Short</option>
+      </select>
+      <button onclick="betoltTrades()">Szűrés</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Idő</th>
+          <th>Szimbólum</th>
+          <th>Tőzsde</th>
+          <th>Irány</th>
+          <th>Belépő</th>
+          <th>Kilépő</th>
+          <th>PnL</th>
+          <th>Részletek</th>
+        </tr>
+      </thead>
+      <tbody id="tradeTabla"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function usd(n){ return '$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function escapeHtml(s){
+  return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+}
+
+async function kerTradeElemzest(tradeId){
+  const res = await fetch('/api/ai/trade-explain', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ tradeId })
+  });
+  const out = await res.json();
+  if(!res.ok || out.error){ alert(out.error || 'Nem sikerült lekérni az elemzést.'); return; }
+  const cel = document.getElementById('trade-extra-'+tradeId);
+  if(!cel) return;
+  cel.innerHTML = '<div class="elemzes">'+escapeHtml(out.szoveg || '')+'</div>';
+}
+
+async function betoltTrades(){
+  const symbol = document.getElementById('symbolSzuro').value;
+  const venue = document.getElementById('venueSzuro').value;
+  const side = document.getElementById('sideSzuro').value;
+  const qs = new URLSearchParams({ symbol, venue, side });
+  const res = await fetch('/api/trades?'+qs.toString());
+  const out = await res.json();
+  const tbody = document.getElementById('tradeTabla');
+  tbody.innerHTML = (out.trades || []).map((t, i) => {
+    const tradeId = t.tradeId || ('trade_'+i+'_'+String(t.closedAt||'').replaceAll(':','-').replaceAll('.','-'));
+    return '<tr>'
+      +'<td>'+(t.closedAt || t.openedAt || '-')+'</td>'
+      +'<td>'+(t.symbol || '-')+'</td>'
+      +'<td>'+(t.venue || '-')+'</td>'
+      +'<td>'+(t.side || '-')+'</td>'
+      +'<td>'+usd(t.entry)+'</td>'
+      +'<td>'+(t.exit ? usd(t.exit) : '-')+'</td>'
+      +'<td>'+((Number(t.pnl||0)>=0?'+':'')+usd(t.pnl||0))+'</td>'
+      +'<td>'+(t.reason || '-')+'<div style="margin-top:8px"><button class="mini" onclick="kerTradeElemzest(\''+tradeId+'\')">Trade elemzés</button></div><div id="trade-extra-'+tradeId+'"></div></td>'
+      +'</tr>';
+  }).join('');
+}
+
+betoltTrades();
+</script>
+</body>
+</html>

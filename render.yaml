@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: nexus-ai
+    env: node
+    buildCommand: npm run build
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_VERSION
+        value: 20.20.2
