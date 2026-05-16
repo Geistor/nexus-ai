@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEXUS AI v165 Persistent Memory</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">⚡</div>
+        <div>
+          <div class="title">NEXUS AI v165 Persistent Memory</div>
+          <div class="sub">AI Operator • unified realtime state • persistent memory • microstructure AI</div>
+        </div>
+      </div>
+      <div class="btns compact-tools">
+        <button id="fixModeBtn" class="s">Fix mód</button>
+        <button id="proModeBtn" class="s">Pro mód</button>
+        <button id="startBtn" class="p">Indítás</button>
+        <button id="stopBtn" class="s">Leállítás</button>
+        <button id="emergencyBtn" class="r">Vész stop</button>
+      </div>
+    </header>
+
+    <section class="status-strip">
+      <div class="status-item"><span class="label">Utolsó művelet</span><strong id="lastActionVal">-</strong></div>
+      <div class="status-item"><span class="label">Supabase</span><strong id="supabaseVal">ellenőrzés...</strong></div>
+      <div class="status-item"><span class="label">Readiness</span><strong id="readinessVal">-</strong></div>
+      <div class="status-item"><span class="label">Utolsó mentés</span><strong id="lastSaveVal">-</strong></div>
+    </section>
+
+    <section class="grid">
+      <div class="card s12 hero-card">
+        <div class="hero-grid">
+          <div>
+            <div class="label">1 gombos működési mód</div>
+            <div class="segmented" id="modeSwitcher">
+              <button class="seg active" data-stage="paper" data-mode="paper_safe">Safe</button>
+              <button class="seg" data-stage="paper" data-mode="paper">Paper</button>
+              <button class="seg" data-stage="staging" data-mode="paper">Staging</button>
+              <button class="seg" data-stage="live" data-mode="live">Live</button>
+            </div>
+            <div class="hero-help">A rendszer a kiválasztott profil szerint állítja a stage-et és a risk viselkedést.</div>
+          </div>
+          <div>
+            <div class="label">AI tuning (profit max)</div>
+            <div class="segmented" id="tuningSwitcher">
+              <button class="seg" data-tuning="safe">Safe AI</button>
+              <button class="seg active" data-tuning="balanced">Balanced</button>
+              <button class="seg profit" data-tuning="profit_max">Profit Max</button>
+            </div>
+            <div class="hero-help" id="tuningHint">Balanced: stabil növekedés és kontrollált kockázat.</div>
+          </div>
+          <div>
+            <div class="label">Portfolio manager full upgrade</div>
+            <div class="segmented" id="portfolioSwitcher">
+              <button class="seg" data-profile="conservative">Konzervatív</button>
+              <button class="seg active" data-profile="balanced">Balanced</button>
+              <button class="seg" data-profile="aggressive">Agresszív</button>
+            </div>
+            <div class="hero-help" id="portfolioHint">Balanced: egyenletes tőkeelosztás több venue között.</div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="card s12 operator-card" id="operatorCard">
+        <div class="row proof-header">
+          <div>
+            <strong>🤖 AI Operator mód</strong>
+            <div class="muted">Egyszerű központi kezelő: mit csinál most az AI, mennyire biztos, és mit érdemes tenned.</div>
+          </div>
+          <div class="btns operator-buttons">
+            <button class="s mini operator-view active" data-view="beginner">Beginner</button>
+            <button class="s mini operator-view" data-view="advanced">Advanced</button>
+            <button class="s mini operator-view" data-view="fullpro">Full Pro</button>
+            <button id="operatorRefreshBtn" class="s mini">Operator frissítés</button>
+          </div>
+        </div>
+        <div class="operator-mode-row">
+          <button class="operator-mode active" data-mode="safe">Safe</button>
+          <button class="operator-mode" data-mode="balanced">Balanced</button>
+          <button class="operator-mode" data-mode="aggressive">Aggressive</button>
+          <button class="operator-mode" data-mode="learning">Learning</button>
+        </div>
+        <div id="operatorPanel" class="operator-panel"><p>AI Operator betöltése...</p></div>
+      </div>
+
+
+      <div class="card s12 autonomous-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧠 Autonomous AI Operator</strong>
+            <div class="muted">Observe → Analyze → Decide → Execute → Evaluate → Adapt. Továbbra is paper-safe, éles order lock aktív.</div>
+          </div>
+          <div class="btns">
+            <button id="autoStartBtn" class="s mini">Autonóm indítás</button>
+            <button id="autoTickBtn" class="s mini">1 autonóm ciklus</button>
+            <button id="autoStopBtn" class="s mini">Autonóm stop</button>
+            <button id="autoRefreshBtn" class="s mini">Frissítés</button>
+          </div>
+        </div>
+        <div id="autonomousPanel" class="proof-panel"><p>Autonomous AI Operator betöltése...</p></div>
+      </div>
+
+      <div class="card s3">
+        <div class="label">Tőkeérték</div>
+        <div class="metric" id="equityVal">-</div>
+        <div class="muted" id="equitySub">Összesített account equity</div>
+      </div>
+      <div class="card s3">
+        <div class="label">AI állapot</div>
+        <div class="metric" id="modelVal">-</div>
+        <div class="muted" id="modelSub">Aktív tuning preset</div>
+      </div>
+      <div class="card s3">
+        <div class="label">Bot</div>
+        <div class="metric" id="botVal">OFF</div>
+        <div class="muted" id="botSub">Védelmi állapot betöltése...</div>
+      </div>
+      <div class="card s3">
+        <div class="label">Találati arány</div>
+        <div class="metric" id="hitVal">-</div>
+        <div class="muted" id="hitSub">AI confidence / winrate</div>
+      </div>
+
+      <div class="card s6">
+        <div class="row"><strong>AI tuning központ</strong><span class="pill"><span class="dot g"></span><span id="aiPresetPill">balanced</span></span></div>
+        <div class="kv blocks" id="aiTuningPanel"></div>
+      </div>
+      <div class="card s6">
+        <div class="row"><strong>Portfolio manager</strong><span class="pill"><span class="dot g"></span><span id="portfolioProfilePill">balanced</span></span></div>
+        <div class="kv blocks" id="portfolioPanel"></div>
+      </div>
+
+      <div class="card s8">
+        <div class="row"><strong>AI magyarázó panel</strong><button id="refreshExplainBtn" class="s mini">Frissítés</button></div>
+        <div id="aiExplainPanel" class="magyarazat">Betöltés...</div>
+      </div>
+      <div class="card s4">
+        <div class="row"><strong>Incident center</strong><button id="refreshLogsBtn" class="s mini">Frissítés</button></div>
+        <div id="incidentPanel" class="log"></div>
+      </div>
+
+
+      <div class="card s6">
+        <div class="row"><strong>Akció előzmények</strong><button id="refreshHistoryBtn" class="s mini">Frissítés</button></div>
+        <div id="historyPanel" class="log rich-log"></div>
+      </div>
+      <div class="card s6">
+        <div class="row"><strong>Model registry / mentések</strong><button id="refreshModelsBtn" class="s mini">Frissítés</button></div>
+        <div id="modelsPanel" class="log rich-log"></div>
+      </div>
+
+      <div class="card s12 ai-trader-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧠 Auto AI trader</strong>
+            <div class="muted">A bot autonóm döntési köre: market adat → AI jel → safe/paper fallback → trade esemény.</div>
+          </div>
+          <div class="btns">
+            <select id="aiTraderVenue" class="proof-select">
+              <option value="binance">Binance</option>
+              <option value="okx">OKX</option>
+              <option value="bybit">Bybit</option>
+              <option value="kraken">Kraken</option>
+            </select>
+            <input id="aiTraderSymbol" class="proof-symbol" value="BTC/USDT" />
+            <input id="aiTraderMinConfidence" class="proof-symbol" type="number" min="0.1" max="0.95" step="0.01" value="0.45" title="Minimum AI confidence" />
+            <input id="aiTraderMaxQty" class="proof-symbol" type="number" min="0.0001" max="1" step="0.0001" value="0.001" title="Max auto order méret" />
+            <button id="aiTraderToggleBtn" class="s mini">AI trader BE/KI</button>
+            <button id="aiTraderRunOnceBtn" class="s mini">1 kör futtatás</button>
+            <button id="aiTraderRefreshBtn" class="s mini">Frissítés</button>
+          </div>
+        </div>
+        <div id="aiTraderPanel" class="proof-panel"><p>Auto AI trader státusz betöltése...</p></div>
+      </div>
+
+
+      <div class="card s12 live-market-card">
+        <div class="row proof-header">
+          <div>
+            <strong>📡 Live Market Data Engine</strong>
+            <div class="muted">Tick stream, orderbook snapshot, feed health, latency és AI orderbook input. Paper-safe mód.</div>
+          </div>
+          <div class="btns">
+            <button id="marketLiveStartBtn" class="s mini">Stream start</button>
+            <button id="marketLiveStopBtn" class="s mini">Stream stop</button>
+            <button id="marketLiveRefreshBtn" class="s mini">Frissítés</button>
+          </div>
+        </div>
+        <div id="marketLivePanel" class="proof-panel"><p>Live market engine betöltése...</p></div>
+      </div>
+
+
+      <div class="card s12 microstructure-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧬 Market Microstructure AI</strong>
+            <div class="muted">Orderflow pressure, liquidity map, micro latency, anomaly detection és AI market instinct. Paper-safe elemző réteg.</div>
+          </div>
+          <div class="btns">
+            <button id="microTickBtn" class="s mini">Micro tick</button>
+            <button id="microRefreshBtn" class="s mini">Frissítés</button>
+          </div>
+        </div>
+        <div id="microPanel" class="proof-panel"><p>Market microstructure AI betöltése...</p></div>
+      </div>
+
+
+
+      <div class="card s12 meta-ai-card">
+        <div class="row proof-header"><div><strong>🧠 Meta AI Coordinator</strong><div class="muted">AI consensus, domináns AI vezető, globális risk brain és konfliktuskezelés.</div></div><div class="btns"><button id="metaRefreshBtn" class="s mini">Meta AI frissítés</button></div></div>
+        <div id="metaPanel" class="proof-panel"><p>Meta AI Coordinator betöltése...</p></div>
+      </div>
+
+      <div class="card s12 deployment-card">
+        <div class="row proof-header"><div><strong>🚦 Deployment & Live Safety</strong><div class="muted">Paper → Staging → Live workflow, readiness score, rollback és emergency control.</div></div><div class="btns"><button id="deploymentRefreshBtn" class="s mini">Deployment frissítés</button><button id="deploymentRollbackBtn" class="s mini">Rollback paper</button><button id="deploymentEmergencyBtn" class="r mini">Emergency stop</button></div></div>
+        <div id="deploymentPanel" class="proof-panel"><p>Deployment safety betöltése...</p></div>
+      </div>
+
+      <div class="card s12 supervision-card">
+        <div class="row proof-header"><div><strong>🚨 Supervision & Incident AI</strong><div class="muted">Health score, incident detection, self diagnostic és recovery flow.</div></div><div class="btns"><button id="supervisionRefreshBtn" class="s mini">Supervisor frissítés</button><button id="supervisionRecoverBtn" class="s mini">Recovery</button><button id="supervisionDowngradeBtn" class="s mini">Safe downgrade</button></div></div>
+        <div id="supervisionPanel" class="proof-panel"><p>Supervision AI betöltése...</p></div>
+      </div>
+
+      <div class="card s12 capital-card">
+        <div class="row proof-header"><div><strong>💰 Capital & Exposure Intelligence</strong><div class="muted">Tőkeallokáció, exposure heatmap, drawdown response és dinamikus position sizing.</div></div><div class="btns"><button id="capitalRefreshBtn" class="s mini">Capital frissítés</button><button id="capitalRebalanceBtn" class="s mini">Paper rebalance</button></div></div>
+        <div id="capitalPanel" class="proof-panel"><p>Capital Intelligence betöltése...</p></div>
+      </div>
+
+      <div class="card s12 portfolio-ai-card">
+        <div class="row proof-header">
+          <div>
+            <strong>💼 Multi-exchange Portfolio AI</strong>
+            <div class="muted">Tőzsdei súlyok, strategy router, venue performance és cross-exchange risk.</div>
+          </div>
+          <div class="btns"><button id="portfolioAiRefreshBtn" class="s mini">Portfolio AI frissítés</button></div>
+        </div>
+        <div id="portfolioAiPanel" class="proof-panel"><p>Portfolio AI státusz betöltése...</p></div>
+      </div>
+
+
+
+      <div class="card s12 realtime-control-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧭 Realtime Control Center</strong>
+            <div class="muted">AI magyarázat, execution feedback, portfolio center, safety center és élő metrikák.</div>
+          </div>
+          <div class="btns"><button id="controlCenterRefreshBtn" class="s mini">Control frissítés</button></div>
+        </div>
+        <div id="controlCenterPanel" class="proof-panel"><p>Realtime control center betöltése...</p></div>
+      </div>
+
+
+      <div class="card s12 orchestrator-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧭 Core Orchestrator + Persistence</strong>
+            <div class="muted">Központi engine, state bus, panel subscription, learning persistence és Supabase-ready model registry.</div>
+          </div>
+          <div class="btns">
+            <button id="orchestratorRefreshBtn" class="s mini">Orchestrator frissítés</button>
+            <button id="orchestratorTickBtn" class="s mini">Engine tick</button>
+            <button id="persistenceSaveBtn" class="s mini">Learning mentés</button>
+          </div>
+        </div>
+        <div id="orchestratorPanel" class="proof-panel"><p>Orchestrator betöltése...</p></div>
+      </div>
+
+
+      <div class="card s12 learning-lab-card">
+        <div class="row proof-header">
+          <div>
+            <strong>🧪 Learning + Backtest Engine</strong>
+            <div class="muted">Trade outcome learning, backtest/szimuláció, model evolution, performance lab és model registry snapshot.</div>
+          </div>
+          <div class="btns">
+            <button id="learningRefreshBtn" class="s mini">Learning frissítés</button>
+            <button id="learningTrainBtn" class="s mini">Tanulási ciklus</button>
+            <button id="backtestRunBtn" class="s mini">Backtest futtatás</button>
+            <button id="modelSnapshotBtn" class="s mini">Model snapshot</button>
+          </div>
+        </div>
+        <div id="learningLabPanel" class="proof-panel"><p>Learning/backtest engine betöltése...</p></div>
+      </div>
+
+      <div class="card s12 proof-card">
+        <div class="row proof-header">
+          <div>
+            <strong>Kapcsolat / market proof</strong>
+            <div class="muted">Bizonyítja, hogy a bot eléri-e a tőzsdei API-t, auth működik-e, és érkezik-e market adat.</div>
+          </div>
+          <div class="btns">
+            <select id="proofVenue" class="proof-select">
+              <option value="binance">Binance</option>
+              <option value="okx">OKX</option>
+              <option value="bybit">Bybit</option>
+              <option value="kraken">Kraken</option>
+            </select>
+            <input id="proofSymbol" class="proof-symbol" value="BTC/USDT" />
+            <button id="proofRefreshBtn" class="s mini">Frissítés / proof</button>
+            <button id="tradeTestBtn" class="s mini">Trade teszt DRY_RUN</button>
+          </div>
+        </div>
+        <div id="proofPanel" class="proof-panel"><p>Nincs még proof adat.</p></div>
+        <pre id="tradeTestOutput" class="copy-area small-copy">Még nincs trade teszt.</pre>
+      </div>
+
+      <div class="card s12 error-card">
+        <div class="row">
+          <div>
+            <strong>Hibanapló / kimásolható hibák</strong>
+            <div class="muted">A jobb alsó hibák és backend hibák teljes szövege itt visszanézhető és kimásolható.</div>
+          </div>
+          <div class="btns">
+            <button id="refreshErrorsBtn" class="s mini">Frissítés</button>
+            <button id="copyErrorsBtn" class="s mini">Másolás</button>
+            <button id="clearErrorsBtn" class="s mini">Törlés</button>
+          </div>
+        </div>
+        <textarea id="errorCopyArea" class="copy-area" readonly>Nincs még rögzített hiba.</textarea>
+        <div id="errorPanel" class="log rich-log"></div>
+      </div>
+
+      <div class="card s12">
+        <div class="row">
+          <div>
+            <strong>Eszközök és haladó műveletek</strong>
+            <div class="muted">Ritkábban használt gombok külön helyre rendezve.</div>
+          </div>
+          <div class="btns">
+            <button id="syncBtn" class="s">Távoli sync</button>
+            <button id="trainBtn" class="s">Tanítás futtatása</button>
+            <button id="maintBtn" class="s">Adatkarbantartás</button>
+            <button id="saveAiBtn" class="s">AI mentés</button>
+            <button id="logBtn" class="s">Trade napló</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card s12">
+        <details>
+          <summary><strong>Tőzsdei kapcsolatok</strong> <span class="muted">— bejelentkezés, mentés és teszt venue-nként</span></summary>
+          <div class="venues-grid">
+            <article class="venue-card" data-venue-card="binance">
+              <div class="venue-head"><h3>Binance</h3><span class="venue-badge" data-venue-status="binance">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="binance" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="binance" />
+                <select data-venue-field="marketType" data-venue="binance"><option value="futures">Futures</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="binance"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="binance" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="binance" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="binance">Mentés</button><button class="s mini" data-venue-test="binance">Teszt</button><button class="s mini" data-venue-clear="binance">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="okx">
+              <div class="venue-head"><h3>OKX</h3><span class="venue-badge" data-venue-status="okx">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="okx" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="okx" />
+                <input type="password" placeholder="Jelszó-kifejezés" data-venue-field="passphrase" data-venue="okx" />
+                <select data-venue-field="marketType" data-venue="okx"><option value="futures">Futures</option><option value="swap">Swap</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="okx"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="okx" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="okx" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="okx">Mentés</button><button class="s mini" data-venue-test="okx">Teszt</button><button class="s mini" data-venue-clear="okx">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="bybit">
+              <div class="venue-head"><h3>Bybit</h3><span class="venue-badge" data-venue-status="bybit">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="bybit" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="bybit" />
+                <select data-venue-field="marketType" data-venue="bybit"><option value="futures">Futures</option><option value="spot">Spot</option></select>
+                <select data-venue-field="marginMode" data-venue="bybit"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="bybit" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="bybit" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="bybit">Mentés</button><button class="s mini" data-venue-test="bybit">Teszt</button><button class="s mini" data-venue-clear="bybit">Törlés</button></div>
+              </div>
+            </article>
+            <article class="venue-card" data-venue-card="kraken">
+              <div class="venue-head"><h3>Kraken</h3><span class="venue-badge" data-venue-status="kraken">nincs mentve</span></div>
+              <div class="venue-form">
+                <input type="password" placeholder="API kulcs" data-venue-field="apiKey" data-venue="kraken" />
+                <input type="password" placeholder="API titok" data-venue-field="secret" data-venue="kraken" />
+                <select data-venue-field="marketType" data-venue="kraken"><option value="spot">Spot</option><option value="futures">Futures</option></select>
+                <select data-venue-field="marginMode" data-venue="kraken"><option value="cross">Cross</option><option value="isolated">Izolált</option></select>
+                <input type="number" min="1" step="1" placeholder="Leverage" data-venue-field="leverage" data-venue="kraken" />
+                <label class="checkline"><input type="checkbox" data-venue-field="testnet" data-venue="kraken" /> Tesztkörnyezet</label>
+                <div class="venue-actions"><button class="s mini" data-venue-save="kraken">Mentés</button><button class="s mini" data-venue-test="kraken">Teszt</button><button class="s mini" data-venue-clear="kraken">Törlés</button></div>
+              </div>
+            </article>
+          </div>
+        </details>
+
+        
+
+        <section class="panel simulation-card advanced-only">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">v172 Simulation Lab</p>
+              <h2>Market Simulation Lab</h2>
+            </div>
+            <div class="btns">
+              <select id="simulationScenario" class="miniSelect">
+                <option value="trend_up">Trend market</option>
+                <option value="panic_crash">Panic crash</option>
+                <option value="chop_range">Chop/range</option>
+                <option value="low_liquidity">Low liquidity</option>
+                <option value="fake_breakout">Fake breakout</option>
+                <option value="latency_reject">Latency + reject</option>
+              </select>
+              <button class="s mini" id="simulationRunBtn">Scenario futtatás</button>
+              <button class="s mini" id="simulationMonteCarloBtn">Monte Carlo</button>
+              <button class="s mini" id="simulationRefreshBtn">Frissítés</button>
+            </div>
+          </div>
+          <p class="muted">AI training universe: trend, panic, chop, low liquidity, fake breakout és execution stress tesztek. Minden paper-safe.</p>
+          <div id="simulationPanel"><p class="muted">Simulation Lab betöltése...</p></div>
+        </section>
+
+        <details class="panel collapse">
+          <summary>Manuális execution / debug fallback</summary>
+          <div class="grid grid-2">
+            <div>
+              <div class="kv"><span>Engine mód</span><strong id="executionMode">-</strong></div>
+              <div class="kv"><span>Workflow stage</span><strong id="executionStage">-</strong></div>
+              <div class="kv"><span>Bot</span><strong id="executionBot">-</strong></div>
+              <div class="kv"><span>Venue-k</span><strong id="executionVenues">-</strong></div>
+              <div class="venue-form" style="margin-top:14px;">
+                <select id="execVenue"></select>
+                <input id="execSymbol" value="BTC/USDT" />
+                <select id="execSide"><option value="buy">BUY</option><option value="sell">SELL</option></select>
+                <select id="execType"><option value="market">Market</option></select>
+                <input id="execAmount" type="number" min="0" step="0.001" value="0.001" />
+                <label class="checkline"><input id="execReduceOnly" type="checkbox" /> reduceOnly</label>
+                <div class="venue-actions"><button class="s mini" id="executionRefresh">Frissítés</button><button class="s mini" id="execSubmit">Order küldése</button></div>
+              </div>
+            </div>
+            <div>
+              <pre id="executionOutput">Még nincs execution válasz.</pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+<style>.venues-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:16px}.venue-card{border:1px solid rgba(122,164,255,.18);border-radius:18px;padding:16px;background:rgba(12,24,46,.55)}.venue-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.venue-head h3{margin:0;font-size:24px}.venue-badge{padding:6px 10px;border-radius:999px;border:1px solid rgba(122,164,255,.22);font-size:12px;color:#9db9ff}.venue-form{display:grid;gap:10px}.venue-form input,.venue-form select{width:100%;background:#0f1e39;color:#fff;border:1px solid rgba(122,164,255,.16);border-radius:12px;padding:12px 14px;font-size:16px}.venue-actions{display:flex;gap:10px;flex-wrap:wrap}</style></body>
+</html>
+
+<section class="card wide v173-evolution-panel">
+<h2>Strategy Evolution Engine</h2>
+<p class="muted">AI Quant Researcher mód: sandbox evolúció, mutáció, survival score, stabilitás. Live order tiltva.</p>
+<div class="two"><div><div class="label">Generáció</div><div id="evo-generation" class="big">--</div></div><div><div class="label">Evolution score</div><div id="evo-score" class="big">--</div></div></div>
+<div class="grid-mini"><div class="box"><div class="label">Legjobb stratégia</div><b id="evo-best">Betöltés...</b></div><div class="box"><div class="label">Survival</div><b id="evo-survival">--</b></div><div class="box"><div class="label">Stability</div><b id="evo-stability">--</b></div></div>
+<div id="evo-note" class="box">Betöltés...</div><div id="evo-list" class="evo-list">Betöltés...</div>
+<div class="actions"><button onclick="NEXUS_V173.runStrategyEvolution()">Sandbox evolúció futtatása</button><button onclick="NEXUS_V173.refreshStrategyEvolution()">Frissítés</button></div>
+</section>
+
+<section class="card wide v174-timeframe-panel">
+<h2>Multi-Timeframe Intelligence</h2>
+<p class="muted">Fraktális piaci kontextus: micro és macro idősíkok konszenzusa, konfliktus felismerés és stratégia-idősík illesztés.</p>
+<div class="two"><div><div class="label">Consensus score</div><div id="tf-consensus" class="big">--</div></div><div><div class="label">Domináns struktúra</div><div id="tf-dominant" class="box">Betöltés...</div></div></div>
+<div class="grid-mini"><div class="box"><div class="label">Macro bias</div><b id="tf-macro">--</b></div><div class="box"><div class="label">Micro bias</div><b id="tf-micro">--</b></div><div class="box"><div class="label">AI action</div><small id="tf-action">Betöltés...</small></div></div>
+<div id="tf-list" class="tf-list">Betöltés...</div><h3>Strategy timeframe matching</h3><div id="tf-strategy-match" class="grid-mini">Betöltés...</div>
+<div class="actions"><button onclick="NEXUS_V174.recalcMultiTimeframe()">Timeframe konszenzus újraszámolása</button><button onclick="NEXUS_V174.refreshMultiTimeframe()">Frissítés</button></div>
+</section>
+
+<section class="card wide v175-cross-market-panel">
+  <h2>Cross-Market Intelligence</h2>
+  <p class="muted">Globális piaci kontextus: correlation matrix, dominance, capital flow, leadership és több-piaci megerősítés.</p>
+  <div class="grid-mini">
+    <div class="box"><div class="label">Market leader</div><b id="cm-leader">Betöltés...</b></div>
+    <div class="box"><div class="label">Capital flow</div><b id="cm-flow">Betöltés...</b></div>
+    <div class="box"><div class="label">Dominance</div><small id="cm-dominance">Betöltés...</small></div>
+  </div>
+  <div class="box"><div class="label">Global context AI</div><span id="cm-context">Betöltés...</span></div>
+  <div class="box"><div class="label">AI recommended action</div><span id="cm-action">Betöltés...</span></div>
+  <h3>Correlation matrix</h3>
+  <div id="cm-correlation-list" class="cm-list">Betöltés...</div>
+  <div class="actions"><button onclick="NEXUS_V175.refreshCrossMarket()">Cross-market frissítés</button></div>
+</section>
+<section class="card wide v176-execution-panel">
+<h2>Execution Optimization Engine</h2><p class="muted">Institutional execution AI: smart order routing, slippage cap, fill quality, liquidity-aware retry és market impact védelem.</p>
+<div class="grid-mini"><div class="box"><div class="label">Execution style</div><b id="exo-style">Betöltés...</b></div><div class="box"><div class="label">Slippage monitor</div><b id="exo-slippage">Betöltés...</b></div><div class="box"><div class="label">Fill quality</div><b id="exo-fill">Betöltés...</b></div></div>
+<div class="grid-mini"><div class="box"><div class="label">Liquidity route</div><small id="exo-liquidity">Betöltés...</small></div><div class="box"><div class="label">Impact score</div><b id="exo-impact">--</b></div><div class="box"><div class="label">AI recommended execution</div><small id="exo-action">Betöltés...</small></div></div>
+<h3>Retry / fallback logic</h3><div id="exo-style-list" class="exo-list">Betöltés...</div>
+<div class="actions"><button onclick="NEXUS_V176.recalcExecutionOptimization()">Execution route újraszámolása</button><button onclick="NEXUS_V176.refreshExecutionOptimization()">Frissítés</button></div></section>
+<section class="card wide v177-learning-panel">
+  <h2>Global Learning Feedback Loop</h2>
+  <p class="muted">Önfejlesztő AI visszacsatolás: performance attribution, self-correction, memory prioritization és reinforcement-style adjustment.</p>
+  <div class="grid-mini">
+    <div class="box"><div class="label">Learning score</div><b id="lf-score">Betöltés...</b></div>
+    <div class="box"><div class="label">Adaptation speed</div><b id="lf-speed">Betöltés...</b></div>
+    <div class="box"><div class="label">Confidence evolution</div><b id="lf-confidence">Betöltés...</b></div>
+  </div>
+  <div class="grid-mini">
+    <div class="box"><div class="label">Top improving strategy</div><small id="lf-top">Betöltés...</small></div>
+    <div class="box"><div class="label">Worst degrading pattern</div><small id="lf-worst">Betöltés...</small></div>
+    <div class="box"><div class="label">AI self-correction</div><small id="lf-action">Betöltés...</small></div>
+  </div>
+  <div class="actions">
+    <button onclick="NEXUS_V177.recalcLearningFeedback()">Learning feedback újraszámolása</button>
+    <button onclick="NEXUS_V177.refreshLearningFeedback()">Frissítés</button>
+  </div>
+</section>

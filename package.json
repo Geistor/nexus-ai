@@ -1,0 +1,11 @@
+{
+  "name": "nexus-ai",
+  "version": "1.77.2-port-fix",
+  "scripts": {
+    "build": "node -e \"console.log('NEXUS v177.2 PORT FIX build OK')\"",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
