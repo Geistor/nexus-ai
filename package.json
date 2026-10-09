@@ -1,0 +1,23 @@
+{
+  "name": "nexus-ai-v199-187-16-paper-lifecycle",
+  "version": "199.187.16",
+  "private": true,
+  "description": "NEXUS safe paper trading: train-only policy, forward champion, durable model/config restore and enforced execution authority; live submit locked.",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm run check",
+    "release:test": "node --test tests/probe-regression.test.js",
+    "test": "node --test tests/probe-regression.test.js",
+    "test:smoke": "node tests/offline-smoke.cjs",
+    "check": "node --check server.js && node --check frontend/app.js && node --check backend/services/marketGuardianWorker.cjs && node --check backend/services/strategyScorecard.js && node --check backend/services/modelRegistry.js && node --check backend/services/continuousRetraining.js && node --check backend/services/strategyQualityAutopilot2.js && node --check backend/services/positionLifecycle2.js && node --check backend/services/evidencePositionSizer2.js && node --check backend/services/multiExchangeAgentMesh.js && node --check backend/services/metaSupervisor2.js && node --check backend/services/executionIntelligence2.js && node --check backend/services/venueAgentAI.js && node --check backend/services/ensembleAI.js && node --check backend/services/venuePolicy.js && node --check backend/services/workflowManager.js && node --check backend/services/edge/orderbookAI.js && node --check backend/services/edge/fundingEdge.js && node --check backend/services/edge/microstructureFusion.js && node --check backend/services/strategySwitcher.js && node --check backend/services/executionAuthority.js && node --check backend/services/portfolioLevelRiskManager.js && node --check backend/services/marketData.js"
+  },
+  "dependencies": {
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8"
+  }
+}

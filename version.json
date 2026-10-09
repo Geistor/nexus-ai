@@ -1,0 +1,9 @@
+{
+  "version": "v199_187_16",
+  "build": "shared-policy-paper-lifecycle",
+  "date": "2026-10-09",
+  "node": "20.x",
+  "entry": "server.js",
+  "notes": "Intermediate working release: common replay/runtime policy; isolated durable public-paper experiments; restart proof; pattern/reference features; optional monitoring cache/private archive; LIVE locked. 100 requirements remain audited, not all complete.",
+  "name": "adaptive-exit-ai-core-simulation-learning-microstructure"
+}
