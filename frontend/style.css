@@ -1,0 +1,565 @@
+*{box-sizing:border-box}body{margin:0;background:#050b12;color:#eef7ff;font-family:Arial,Helvetica,sans-serif;font-weight:700}.layout{display:flex;min-height:calc(100vh - 52px)}aside{width:310px;background:linear-gradient(180deg,#07111d,#050911);border-right:1px solid #16334c;padding:18px;position:sticky;top:0;height:calc(100vh - 52px);overflow:auto}.brand h1{margin:0;font-size:32px;letter-spacing:1px}.brand p{margin:2px 0 20px;color:#9eb3c8;font-size:12px}.autopilot,.card,.panel,.top>div,.nav,.mode button,.sourceBanner{background:rgba(13,25,39,.92);border:1px solid #1e496b;border-radius:14px;box-shadow:0 0 25px rgba(0,255,110,.04)}.autopilot{padding:18px;margin-bottom:18px;color:#25e85b}.radar{font-size:42px;text-shadow:0 0 18px #21ff5b}.autopilot b{display:block;font-size:20px}.autopilot small,.muted,.card em{color:#9eb3c8;font-style:normal}.nav,button{border:1px solid #244d68;background:#102036;color:#eef7ff;border-radius:10px;padding:13px;margin:7px 0;font-weight:900;cursor:pointer}.nav{width:100%;text-align:left}.nav.active,.nav:hover,button:hover,.primary{background:linear-gradient(90deg,#0b8f40,#20e85a);color:#03110a}.danger{background:#801c1c;color:#fff;border-color:#d44747}.mode h3{font-size:14px;text-transform:uppercase}.mode button{width:100%;text-align:left}main{flex:1;padding:22px;overflow:auto}header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}h2{font-size:34px;margin:0}h2 span{font-size:14px;background:#063b1f;color:#23ff65;border-radius:8px;padding:8px 12px;text-transform:uppercase}header p{color:#a9bfd3}.top{display:flex;gap:12px;align-items:stretch}.top>div{padding:14px;min-width:140px}.green{color:#21f45b}.view{display:none}.view.active{display:block}.sourceBanner{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:16px;margin-bottom:16px}.sourceBanner small{display:block;color:#9eb3c8}.sourceBanner b{display:block;font-size:24px}.sourceBanner span{color:#c7d5e2}.sourceBanner.ok{border-color:#1aa053}.sourceBanner.warn{border-color:#b88718}.sourceBanner.danger{border-color:#d44747}.sourceBanner.danger b{color:#ff6868}.sourceBanner.warn b{color:#ffd166}.sourceBanner.ok b{color:#21f45b}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{padding:20px;min-height:136px}.card small{text-transform:uppercase;color:#b6c7d8}.card strong{display:block;font-size:34px;color:#20e85a;margin:18px 0 8px}.profit strong{font-size:30px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel{padding:20px;margin-bottom:16px}.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.actions button{width:100%;margin:0}.controlLevels{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.controlLevels h4{margin:0 0 8px;color:#9eb3c8}.controlLevels button{width:100%;margin:5px 0}.feed{max-height:360px;overflow:auto}.tall{max-height:65vh}.item{background:#101b2a;border:1px solid #243d58;border-radius:10px;padding:12px;margin:8px 0}.item small{color:#91a9bd}.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}input,select{background:#0b1b2d;border:1px solid #244d68;border-radius:10px;color:#fff;padding:13px;font-weight:800}pre{white-space:pre-wrap;background:#07111d;border:1px solid #244d68;border-radius:12px;padding:14px;max-height:220px;overflow:auto}.exchangeGrid,.moduleGrid,.orderGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.module,.order{background:#101b2a;border:1px solid #284963;border-radius:12px;padding:16px}.module h3,.order h3{margin:0 0 8px}.module b{color:#21f45b}.module p{color:#a9bfd3;min-height:40px}.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.step{padding:14px;border:1px solid #244d68;border-radius:12px;background:#101b2a;text-align:left;min-height:86px}.step b{display:block}.step small{display:block;color:#9eb3c8;margin-top:8px}.step.active{background:#104526;box-shadow:0 0 18px rgba(32,232,90,.18)}.step.blocked{border-color:#d44747}.check{padding:12px;border:1px solid #244d68;border-radius:12px;background:#101b2a;margin:8px 0}.check b{display:block}.check small{display:block;color:#9eb3c8;margin-top:4px}.check.ok{border-color:#1aa053}.check.bad{border-color:#d44747}.check.ok b{color:#21f45b}.check.bad b{color:#ff6868}.logFilters{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}.logFilters button{width:auto;margin:0}.logFilters button.active{background:#24b8ff;color:#03111c}.lifecycle{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.lifecycle span{border:1px solid #29445f;border-radius:999px;padding:6px 8px;color:#7f93a7;font-size:11px}.lifecycle span.done{border-color:#1aa053;color:#21f45b;background:#0d2a1b}footer{height:52px;position:sticky;bottom:0;background:#07111d;border-top:1px solid #16334c;display:flex;align-items:center;gap:28px;padding:0 18px}.consoleBtn{width:auto;margin:0;border-color:#24b8ff}.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:10}.modal>div{background:#07111d;border:1px solid #2b638d;border-radius:18px;padding:20px;max-width:760px;width:92%}.hidden{display:none}.toast{position:fixed;right:18px;bottom:70px;background:#0b8f40;color:white;padding:14px 18px;border-radius:14px;z-index:20}td{padding:10px;border-bottom:1px solid #24465f}@media(max-width:1100px){.layout{display:block}aside{width:auto;height:auto;position:relative}.cards,.grid,.sourceBanner{grid-template-columns:1fr}header,.top{display:block}footer{flex-wrap:wrap;height:auto;padding:10px}.top>div{margin:8px 0}}
+.vaultGrid{margin-top:10px}.vaultActions{grid-template-columns:minmax(180px,1fr) repeat(4,minmax(160px,1fr));align-items:center}.vaultActions input{width:100%;margin:0}.vaultActions button{margin:0}.vaultGrid .cards{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}.vaultGrid .card{min-height:118px}.vaultGrid .card strong{font-size:26px}.profitVaultInline{border-color:#1aa053}@media(max-width:1100px){.vaultActions{grid-template-columns:1fr}}
+
+.check.warn{border-color:#b88718}.check.warn b{color:#ffd166}.supabaseCheck{margin-top:14px;border-top:1px solid #244d68;padding-top:14px}.supabaseHeader{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}.supabaseHeader h4{margin:0 0 4px;color:#eef7ff}.supabaseHeader small{color:#9eb3c8;display:block;line-height:1.35}.badge{border:1px solid #244d68;border-radius:999px;padding:8px 10px;font-size:12px;white-space:nowrap;background:#101b2a}.badge.ok{border-color:#1aa053;color:#21f45b}.badge.warn{border-color:#b88718;color:#ffd166}.badge.bad{border-color:#d44747;color:#ff6868}.supabaseGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}.supabaseGrid .check{margin:0}.supabaseActions{margin:12px 0}.supabaseResult{max-height:220px;overflow:auto}.supabaseResult small{white-space:pre-wrap;font-family:Consolas,monospace;font-weight:700}@media(max-width:1100px){.supabaseHeader{display:block}.badge{display:inline-block;margin-top:8px}}
+
+
+.promotionHeader{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.promotionHeader h4{margin:0 0 4px}.promotionHeader small{color:#9eb3c8;display:block;line-height:1.35}.promotionCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}.promotionCards .check{margin:0}.promotionColumns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.promotionSection{background:#0c1724;border:1px solid #244d68;border-radius:14px;padding:12px}.promotionSection h4{margin:0 0 8px;color:#eef7ff}.condition{border:1px solid #244d68;border-radius:10px;padding:9px;margin:6px 0;background:#101b2a}.condition b{display:block}.condition small{color:#9eb3c8;display:block;margin-top:3px}.condition.ok{border-color:#1aa053}.condition.ok b{color:#21f45b}.condition.warn{border-color:#b88718}.condition.warn b{color:#ffd166}.condition.bad{border-color:#d44747}.condition.bad b{color:#ff6868}.condition.empty{color:#9eb3c8}.missingBox{border:1px solid #244d68;border-radius:10px;padding:10px;margin-top:8px;background:#07111d}.missingBox small{white-space:pre-wrap;color:#9eb3c8;display:block;margin-top:4px}.missingBox.ok{border-color:#1aa053}.missingBox.ok b{color:#21f45b}.missingBox.warn{border-color:#b88718}.missingBox.warn b{color:#ffd166}.missingBox.bad{border-color:#d44747}.missingBox.bad b{color:#ff6868}.progress{height:8px;border-radius:999px;background:#07111d;border:1px solid #244d68;overflow:hidden;margin-top:10px}.progress span{display:block;height:100%;background:linear-gradient(90deg,#0b8f40,#20e85a)}.promotionFooter{margin-top:12px}.promotionActions{margin-top:10px}@media(max-width:1100px){.promotionHeader{display:block}.promotionColumns{grid-template-columns:1fr}}
+
+.liveReadinessBox{margin-top:14px;border:1px solid #2d5e80;border-radius:14px;background:#07111d;padding:12px}
+
+/* v199_51 layout glitch fix: csak függőleges görgetés, nincs oldalirányú scroll */
+html,body{max-width:100%;overflow-x:hidden}body{width:100%}.layout{width:100%;max-width:100%;overflow-x:hidden}main{min-width:0;max-width:100%;overflow-x:hidden}.panel,.card,.check,.missingBox,.promotionSection,.sourceBanner,.module,.order,.item,pre{max-width:100%;overflow-wrap:anywhere;word-break:break-word}.grid,.cards,.top,.sourceBanner,.exchangeGrid,.moduleGrid,.orderGrid,.steps,.actions,.controlLevels,.supabaseGrid,.promotionCards,.promotionColumns,.vaultGrid{min-width:0;max-width:100%;overflow-x:hidden}.grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cards{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.promotionColumns{grid-template-columns:minmax(0,1fr)}.promotionActions,.actions{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.promotionActions button,.actions button,button{white-space:normal;overflow-wrap:anywhere}.missingBox small,.check small,.condition small,.supabaseResult small,pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}.feed,.tall,.supabaseResult,pre{overflow-x:hidden}.top{flex-wrap:wrap}.top>div{min-width:0}.brand h1,h2{overflow-wrap:anywhere}.badge{white-space:normal}@media(max-width:1350px){.grid{grid-template-columns:1fr}.promotionColumns{grid-template-columns:1fr}.cards{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}}@media(max-width:900px){.layout{display:block}aside{width:auto;max-width:100%;height:auto;position:relative}main{padding:14px}.cards,.grid,.sourceBanner,.promotionCards,.supabaseGrid{grid-template-columns:1fr}header{display:block}h2{font-size:26px}footer{position:relative;display:block;height:auto}footer span,footer button{display:block;margin:6px 0}.panel{padding:14px}}
+
+/* v199_52 final header/layout fix: nincs felső elcsúszás, nincs vízszintes scroll */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  position: relative;
+}
+.layout {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+aside {
+  flex: 0 0 310px;
+  width: 310px;
+  min-width: 310px;
+  max-width: 310px;
+}
+main {
+  flex: 1 1 auto;
+  width: calc(100vw - 310px);
+  max-width: calc(100vw - 310px);
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  justify-content: start;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+header > div:first-child {
+  min-width: 0;
+  max-width: 100%;
+}
+header h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  line-height: 1.1;
+}
+header h2 span {
+  display: inline-block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+header p {
+  max-width: 100%;
+  line-height: 1.3;
+  margin-bottom: 0;
+}
+.top {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 260px));
+  justify-content: start;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+.top > div,
+.top > button {
+  min-width: 0;
+  max-width: 260px;
+  width: 100%;
+  margin: 0;
+}
+.sourceBanner,
+.panel,
+.liveReadinessBox,
+.promotionSection,
+.missingBox,
+.supabaseResult,
+.feed,
+pre {
+  overflow-x: hidden !important;
+}
+.missingBox small,
+.condition small,
+.check small,
+.supabaseResult small,
+pre {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+@media (max-width: 900px) {
+  .layout { display: block; width: 100%; max-width: 100%; }
+  aside { position: relative; flex: none; width: 100%; min-width: 0; max-width: 100%; height: auto; }
+  main { width: 100%; max-width: 100%; }
+  .top { grid-template-columns: 1fr; }
+  .top > div, .top > button { max-width: 100%; }
+}
+
+
+/* v199_56 top status/cache consistency wrap fix: a hosszú rendszerállapot nem lóghat ki a dobozból */
+.top {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  align-items: stretch !important;
+}
+.top > div,
+.top > button {
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+.top b,
+#ready,
+#srv {
+  display: block !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  line-height: 1.15 !important;
+}
+#ready {
+  font-size: clamp(16px, 1.7vw, 22px) !important;
+  letter-spacing: 0.2px !important;
+}
+.top .danger {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 1200px) {
+  .top { grid-template-columns: 1fr !important; }
+}
+
+/* v199_56: header/top cards must not overflow horizontally */
+html, body { max-width: 100%; overflow-x: hidden; }
+header, .top, .top > div, .top button { min-width: 0; max-width: 100%; }
+.top { flex-wrap: wrap; align-items: stretch; }
+.top > div { overflow-wrap: anywhere; word-break: break-word; }
+#ready, #buildLabel, #footerVersion, #brandVersion { overflow-wrap: anywhere; word-break: break-word; }
+
+
+/* v199_59 bottom status bar compact fix core
+   A bal oldali NEXUS konzol/sáv maradjon fixen a helyén desktop nézetben.
+   A fő tartalom görget külön, vízszintes scroll nélkül. */
+@media (min-width: 901px) {
+  html, body {
+    height: 100%;
+    overflow-x: hidden !important;
+  }
+  body {
+    min-height: 100vh;
+  }
+  .layout {
+    display: grid !important;
+    grid-template-columns: 310px minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: calc(100vh - 52px) !important;
+    overflow: visible !important;
+  }
+  aside {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    align-self: start !important;
+    width: 310px !important;
+    min-width: 310px !important;
+    max-width: 310px !important;
+    height: calc(100vh - 52px) !important;
+    max-height: calc(100vh - 52px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 5 !important;
+  }
+  main {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .layout {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  aside {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* v199_59 bottom status bar compact fix core
+   Az alsó státuszsáv vékonyabb, nem takar rá a tartalomra.
+   A bal oldali konzol fix marad, a fő tartalom kap biztonsági alsó helyet. */
+:root {
+  --nexus-footer-h: 40px;
+}
+footer {
+  min-height: var(--nexus-footer-h) !important;
+  height: auto !important;
+  max-height: 52px !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 30 !important;
+  padding: 5px 14px !important;
+  gap: 14px !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+footer span,
+footer b {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+footer .consoleBtn,
+.consoleBtn {
+  min-height: 30px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+main {
+  padding-bottom: calc(var(--nexus-footer-h) + 22px) !important;
+}
+@media (min-width: 901px) {
+  .layout {
+    min-height: calc(100vh - var(--nexus-footer-h)) !important;
+  }
+  aside {
+    height: calc(100vh - var(--nexus-footer-h)) !important;
+    max-height: calc(100vh - var(--nexus-footer-h)) !important;
+  }
+}
+@media (max-width: 900px) {
+  footer {
+    max-height: none !important;
+    flex-wrap: wrap !important;
+    gap: 8px 12px !important;
+    padding: 7px 10px !important;
+  }
+  footer span {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  main {
+    padding-bottom: 78px !important;
+  }
+}
+
+/* v199_61 startup-check-auto-hydrate-proof-sync-final-core: startup checklist proof rows use synced backend state; layout inherited from v199_59. */
+
+/* v199_74/v199_75 startup-dashboard-neutral-proof-core:
+   A live decision gombsor maradjon látható a sticky alsó státuszsáv felett. */
+.liveReadinessBox .promotionActions,
+#promotionBox > .promotionFooter .promotionActions {
+  margin-bottom: calc(var(--nexus-footer-h) + 12px) !important;
+}
+
+/* v199_74/v199_75 startup-dashboard-neutral-proof-core:
+   A videón látható nyers runtime címkék és zöld gombok ne legyenek félreérthetőek. */
+.card strong#phase,
+#ready,
+#phaseSmall,
+.step b {
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+}
+.card strong#phase {
+  font-size: clamp(22px, 2.4vw, 34px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: 0.2px !important;
+}
+.step b {
+  font-size: 14px !important;
+  line-height: 1.12 !important;
+}
+.step small {
+  font-size: 12px !important;
+}
+button.actionStatus {
+  border-width: 1px !important;
+  transition: transform .08s ease, border-color .08s ease, background .08s ease !important;
+}
+button.actionStatus:hover {
+  transform: translateY(-1px);
+}
+button.actionNext {
+  background: linear-gradient(90deg,#33c954,#62fb58) !important;
+  color: #07111d !important;
+  border-color: #62fb58 !important;
+}
+button.actionDone {
+  background: #0b1f19 !important;
+  color: #bfffd0 !important;
+  border-color: #1aa053 !important;
+}
+button.actionWarn {
+  background: #1a1a12 !important;
+  color: #ffd166 !important;
+  border-color: #b88718 !important;
+}
+button.actionDanger {
+  background: #3a1118 !important;
+  color: #ffb4b4 !important;
+  border-color: #d44747 !important;
+}
+button.actionNeutral,
+button.actionBusy {
+  background: #101b2a !important;
+  color: #eef7ff !important;
+  border-color: #244d68 !important;
+}
+button.actionBusy {
+  opacity: .88;
+}
+@media (max-width: 1350px) {
+  .card strong#phase { font-size: clamp(20px, 3vw, 28px) !important; }
+}
+
+/* v199_75 no-blank-feed-supabase-feedback-core:
+   Videós ellenőrzés alapján: hosszú Promotion guard ne hagyjon nagy üres bal oldali oszlopot,
+   és a feed meta címke ne folyjon össze az üzenettel. */
+.decisionGuardGrid {
+  grid-template-columns: 1fr !important;
+}
+.item small.eventMeta {
+  display: block !important;
+  margin-bottom: 4px !important;
+  line-height: 1.25 !important;
+}
+.item .eventText {
+  display: block !important;
+  line-height: 1.28 !important;
+}
+#promotionBox,
+#promotionBox * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+
+/* v199_77 compact-live-env-guide-runtime-label-core:
+   A live readiness kártyák ne nyúljanak hatalmas üres oszlopokká, és az ENV útmutató csak a mentett/használt venue-t emelje ki. */
+.liveReadinessBox > .promotionCards,
+.liveEnvGuide > .promotionCards {
+  align-items: start !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+}
+.liveReadinessBox > .promotionCards > .check,
+.liveEnvGuide > .promotionCards > .check {
+  align-self: start !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+.liveReadinessBox .check small,
+.liveEnvGuide .check small,
+.liveEnvGuide .missingBox small {
+  line-height: 1.28 !important;
+}
+.liveEnvGuide .badge {
+  max-width: 260px !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* v199_79 hungarian-runtime-safe-lock-compact-core:
+   A videón a zöld toast ráült az alsó akciógombokra, ezért desktopon felül jelenik meg.
+   A live proof gombok rövidebb magyar feliratokat kapnak, és nem törnek ki a kártyákból. */
+.toast {
+  top: 14px !important;
+  right: 18px !important;
+  bottom: auto !important;
+  max-width: min(560px, calc(100vw - 360px)) !important;
+  line-height: 1.25 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35) !important;
+}
+.promotionActions button {
+  min-height: 54px !important;
+  line-height: 1.18 !important;
+}
+.liveReadinessBox .promotionHeader .badge,
+.liveEnvGuide .promotionHeader .badge {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+}
+@media(max-width:900px){
+  .toast { top: auto !important; right: 12px !important; bottom: 16px !important; max-width: calc(100vw - 24px) !important; }
+}
+
+/* v199_85+ learning-observation-dashboard-core:
+   Elemző nézet a winrate / profit factor / setup / compounding fejlődéshez.
+   Csak mér, nem csökkenti a trade aktivitást. */
+.observationBox { display: grid; gap: 14px; }
+.observationWindows { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important; }
+.observationGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; align-items: start; }
+.observationGrid.narrow { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.observationTable { background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 12px; min-width: 0; }
+.observationTable h4 { margin: 0 0 10px; font-size: 14px; letter-spacing: .02em; }
+.miniTable { width: 100%; border-collapse: collapse; font-size: 12px; }
+.miniTable th, .miniTable td { text-align: left; padding: 7px 6px; border-bottom: 1px solid rgba(255,255,255,.07); vertical-align: top; }
+.miniTable th { opacity: .72; font-weight: 700; }
+.miniTable td:first-child { overflow-wrap: anywhere; max-width: 180px; }
+.observationNote { padding: 12px 14px; border-radius: 14px; background: rgba(80, 170, 255, .08); border: 1px solid rgba(80, 170, 255, .18); line-height: 1.35; }
+.tag { display: inline-block; margin: 3px 5px 3px 0; padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.09); font-size: 12px; }
+@media(max-width:900px){ .observationGrid, .observationGrid.narrow { grid-template-columns: 1fr; } .miniTable { font-size: 11px; } }
+.card.warnSoft { border-color: rgba(255, 203, 95, .38); background: rgba(255, 203, 95, .055); }
+.card.okSoft { border-color: rgba(84, 255, 109, .36); background: rgba(84, 255, 109, .055); }
+
+/* v199_90 observation-readability-watchlist-core:
+   A megfigyelő listák nem keverik a jó mintákat a figyelendők közé,
+   és masonry szerűen tördelnek, hogy ne maradjon nagy üres oszlop. */
+.observationGrid.observationMasonry { display: block; column-width: 360px; column-gap: 14px; }
+.observationGrid.observationMasonry .observationTable { display: inline-block; width: 100%; margin: 0 0 14px; break-inside: avoid; }
+.tableReason { opacity: .72; font-size: 11px; line-height: 1.2; }
+@media(max-width:900px){ .observationGrid.observationMasonry { column-width: auto; column-count: 1; } }
+
+
+/* v199_90 observation-readability-watchlist-core:
+   A megfigyelő táblák olvashatóbbak, a profitábilis, de alacsony winrate minták nem keverednek a valóban gyenge listába. */
+.observationWindows .card em { display: block; margin-top: 3px; }
+.observationWindows .sourceLine { opacity: .74; }
+.setupKey { display: grid; gap: 2px; line-height: 1.18; }
+.setupKey b { font-size: 11px; letter-spacing: .01em; }
+.setupKey small { opacity: .74; font-size: 10px; overflow-wrap: anywhere; }
+.miniTable { table-layout: fixed; }
+.miniTable th:nth-child(1), .miniTable td:nth-child(1) { width: 38%; }
+.miniTable th:nth-child(2), .miniTable td:nth-child(2) { width: 10%; }
+.miniTable th:nth-child(3), .miniTable td:nth-child(3), .miniTable th:nth-child(4), .miniTable td:nth-child(4), .miniTable th:nth-child(6), .miniTable td:nth-child(6) { width: 13%; }
+.miniTable th:nth-child(5), .miniTable td:nth-child(5) { width: 13%; }
+.calibrationTable th:nth-child(1), .calibrationTable td:nth-child(1) { width: 20%; }
+.calibrationTable th:nth-child(2), .calibrationTable td:nth-child(2) { width: 14%; }
+.calibrationTable th:nth-child(3), .calibrationTable td:nth-child(3), .calibrationTable th:nth-child(4), .calibrationTable td:nth-child(4), .calibrationTable th:nth-child(5), .calibrationTable td:nth-child(5) { width: 22%; }
+
+/* v199_104 sidebar-visible-mode-status-final-core:
+   A megfigyelő táblái kártyás sorokra váltanak, hogy ne törjenek szét a Trade/Winrate oszlopok.
+   Emellett a méretezési okok és stratégiaminták teljesen olvashatóbbak. */
+.obsList{display:grid;gap:8px}.obsRow{display:grid;grid-template-columns:minmax(180px,1.25fr) minmax(260px,1.75fr);gap:10px;align-items:start;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;background:rgba(0,0,0,.13)}.obsMain{min-width:0}.obsReason{display:block;margin-top:6px;line-height:1.3;color:#b8c9d8}.obsMetrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:6px}.obsMetric{display:block;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:6px 7px;background:rgba(255,255,255,.035);min-width:0}.obsMetric small{display:block;color:#9eb3c8;font-size:10px;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;white-space:nowrap}.obsMetric b{display:block;color:#eef7ff;font-size:13px;line-height:1.15;overflow-wrap:anywhere}.setupKey b{line-height:1.15}.setupKey small{line-height:1.25}.observationTable .tag{display:inline-block;margin:3px 5px 3px 0;line-height:1.25;white-space:normal}.miniTable th{white-space:normal;line-height:1.1}.miniTable td{vertical-align:top}.observationNote b{color:#eef7ff}@media(max-width:1250px){.obsRow{grid-template-columns:1fr}.obsMetrics{grid-template-columns:repeat(auto-fit,minmax(92px,1fr))}}@media(max-width:900px){.obsMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}.obsMetric small{white-space:normal}}
+
+/* v199_104 sidebar-visible-mode-status-final-core:
+   A kis 1h minta ne tűnjön stratégiai romlásnak, csak rövid távú zajnak. */
+.observationWindows .sampleLine{font-weight:700;color:#cbd8e6;opacity:.9}.card.tinySample{border-color:rgba(255,203,95,.42)!important;background:rgba(255,203,95,.055)!important}.card.limitedSample{border-color:rgba(80,170,255,.25)!important;background:rgba(80,170,255,.045)!important}.card.okSample .sampleLine{color:#72ff80}.card.tinySample .sampleLine{color:#ffd37a}.card.limitedSample .sampleLine{color:#a9d4ff}.observationWindows .card.tinySample strong{color:#ffd37a!important}
+
+/* v199_104 sidebar-visible-mode-status-final-core */
+.modeStatus{display:block;background:rgba(13,25,39,.92);border:1px solid #1e496b;border-radius:14px;padding:12px 13px;margin:7px 0 4px;color:#eef7ff;font-weight:900;line-height:1.2;box-shadow:0 0 25px rgba(0,255,110,.04)}
+.modeStatus.safe{border-color:#1aa053;color:#21f45b;background:#0d2a1b}
+.modeStatus.live{border-color:#24b8ff;color:#7bd8ff;background:#0b2436}
+.modeDetail{display:block;color:#9eb3c8;margin:0 0 8px 2px;font-size:12px;line-height:1.25}
+.mode button.safeModeMirror{border-color:#1aa053;background:#0d2a1b;color:#21f45b}
+
+
+/* v199_114 winrate-zero-fallback-repair-core:
+   A nagy profit/portfólió számok ne törjenek ketté a kártyákon,
+   miközben továbbra sincs vízszintes görgetés. */
+.card strong,
+.vaultGrid .card strong,
+.sourceBanner b,
+.obsMetric b {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+  max-width: 100% !important;
+}
+.card strong {
+  font-size: clamp(24px, 2.35vw, 34px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.02em !important;
+}
+.profit strong,
+.vaultGrid .card strong {
+  font-size: clamp(22px, 2.05vw, 30px) !important;
+}
+.cards .card {
+  min-width: 0 !important;
+}
+@media (max-width: 1350px) {
+  .card strong { font-size: clamp(21px, 2.65vw, 28px) !important; }
+  .profit strong, .vaultGrid .card strong { font-size: clamp(20px, 2.45vw, 26px) !important; }
+}
+@media (max-width: 900px) {
+  .card strong, .profit strong, .vaultGrid .card strong { font-size: clamp(22px, 7vw, 32px) !important; }
+}
+
+/* v199_123: recovered/stale incident clarity */
+.item.recoveredIncident {
+  border-color: rgba(69, 255, 106, 0.35);
+  background: rgba(69, 255, 106, 0.06);
+}
+.item.recoveredIncident .eventMeta,
+.item.recoveredIncident .eventText {
+  color: #bfffc9;
+}
+
+/* v199_132 verified market / legacy quarantine clarity */
+.order.warnSoft, .item.warnSoft { border-color: rgba(255, 203, 95, .45); background: rgba(255, 203, 95, .055); }
+
+
+/* v199_137 paper simulation visibility */
+.simulationPulsePanel{border-color:rgba(63,224,138,.45);background:linear-gradient(180deg,rgba(17,40,46,.96),rgba(10,27,34,.96))}
+.simulationPulsePanel h3{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.simBadge{display:inline-flex;align-items:center;max-width:58%;padding:5px 10px;border-radius:999px;font-size:11px;line-height:1.2;text-align:right;background:rgba(255,191,71,.14);border:1px solid rgba(255,191,71,.35)}
+.simBadge.ok,.simBadge.active{background:rgba(63,224,138,.12);border-color:rgba(63,224,138,.42);color:#74f1a7}
+.simCards{margin-bottom:12px}.simCards .card strong{font-size:23px}.simCards .card em{white-space:normal}
+.simPosition{display:grid;grid-template-columns:minmax(240px,1fr) minmax(220px,1.2fr);gap:10px 18px;align-items:center;padding:12px;border:1px solid rgba(115,153,174,.28);border-radius:12px;background:rgba(2,14,20,.34)}
+.simPosition>div:first-child{display:flex;flex-direction:column;gap:4px}.simPosition small{color:#9fb3c0}
+.simProgressTrack{height:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.simProgressTrack span{display:block;width:0;height:100%;border-radius:999px;background:linear-gradient(90deg,#35d980,#75efa9);transition:width .6s ease}
+.simPosition>small{grid-column:1/-1}.simEquitySpark{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(2,14,20,.28);color:#65e69a}
+.simEquitySpark svg{width:100%;height:86px;display:block}.simEquitySpark>small{color:#91a9b5}.simSparkHeader{display:flex;justify-content:space-between;align-items:center;color:#b8ccd5;margin-bottom:2px}.simSparkHeader b{color:#70eda4}
+@media(max-width:900px){.simPosition{grid-template-columns:1fr}.simPosition>small{grid-column:auto}.simBadge{max-width:52%;font-size:10px}}
+
+/* v199_138 weighted historical learning */
+.historicalLearningBox{margin-top:14px}.historicalLearningBox .check{margin-bottom:8px}
+
+/* v199_176 - simple four-exchange capital board */
+.venueCapitalQuickPanel{border-color:#1aa053;background:linear-gradient(180deg,rgba(14,34,45,.96),rgba(8,20,31,.96))}.venueCapitalSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:8px 0 14px}.venueCapitalSummary>div{background:#0d1a29;border:1px solid #244d68;border-radius:12px;padding:12px;min-width:0}.venueCapitalSummary small{display:block;color:#9eb3c8;font-size:11px}.venueCapitalSummary b{display:block;color:#21f45b;font-size:21px;margin-top:5px;overflow-wrap:anywhere}.venueCapitalSummary em{display:block;color:#9eb3c8;font-style:normal;font-size:11px;margin-top:4px}.venueCapitalBoard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.venueCapitalCard{background:#0d1a29;border:1px solid #244d68;border-radius:14px;padding:15px;min-width:0}.venueCapitalCard.ok{border-color:#1aa053}.venueCapitalCard.warn{border-color:#b88718}.venueCapitalCard.bad{border-color:#d44747}.venueCapitalHeader{display:flex;align-items:center;justify-content:space-between;gap:8px}.venueCapitalHeader>b{font-size:16px}.venueCapitalCard>strong{display:block;color:#21f45b;font-size:28px;margin:12px 0}.venueCapitalRows{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}.venueCapitalRows span{background:#09131f;border:1px solid #1c3a54;border-radius:8px;padding:7px;color:#9eb3c8;font-size:11px}.venueCapitalRows span b{display:block;color:#eef7ff;font-size:13px;margin-top:2px}.venueCapitalRows .positive{color:#21f45b}.venueCapitalRows .negative{color:#ff6868}.venueCapitalCard small{display:block;color:#a9bfd3;line-height:1.35;margin-top:5px}.capitalExplain{display:flex;flex-direction:column;gap:4px;background:#0d2a1b;border:1px solid #1aa053;border-radius:12px;padding:12px;margin-bottom:12px}.capitalExplain b{color:#21f45b;font-size:17px}.capitalExplain span{color:#c7d5e2}.devDetails{margin-top:14px;border:1px solid #244d68;border-radius:12px;padding:10px;background:#07111d}.devDetails summary{cursor:pointer;color:#9eb3c8}.devDetails pre{margin-bottom:0}@media(max-width:1350px){.venueCapitalBoard,.venueCapitalSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:900px){.venueCapitalBoard,.venueCapitalSummary{grid-template-columns:1fr}.venueCapitalRows{grid-template-columns:1fr 1fr}}
+
+/* v199_187_12 Strategy Builder compact panel */
+.strategyBuilderPanel{margin-top:16px;padding:14px;border:1px solid rgba(102,255,180,.18);border-radius:12px;background:rgba(7,24,28,.55)}
+.strategyBuilderPanel textarea{width:100%;box-sizing:border-box;min-height:96px;resize:vertical;background:#08181c;color:#dff7ef;border:1px solid #26444b;border-radius:9px;padding:10px;font:inherit;line-height:1.4}
+.strategyBuilderPanel textarea:focus{outline:1px solid #32df8d;border-color:#32df8d}
