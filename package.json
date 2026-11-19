@@ -1,6 +1,6 @@
 {
-  "name": "nexus-ai-v199-187-17-postgres",
-  "version": "199.187.17",
+  "name": "nexus-ai-v199-187-18-postgres",
+  "version": "199.187.18",
   "private": true,
   "description": "NEXUS safe paper trading: train-only policy, forward champion, durable model/config restore and enforced execution authority; live submit locked.",
   "engines": {

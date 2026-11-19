@@ -1,6 +1,16 @@
-# NEXUS AI v199_187_17 — DigitalOcean PostgreSQL
+# NEXUS AI v199_187_18 — DigitalOcean PostgreSQL
 
 Kiindulás: **v199_187_16**. A `server.js` adatbázis-műveletei választhatóan közvetlen PostgreSQL-kapcsolaton mennek. A Paper szabályok, a kereskedési felület, a stratégiai verzió, valamint a valós megbízások meglévő tiltása változatlan. A korábbi Supabase útvonal továbbra is választható (`NEXUS_DB_PROVIDER=supabase` vagy változó nélkül). Az eredeti **100 pont** változatlan azonosítókkal a `REQUIREMENTS_MATRIX_1_100.md` fájlban van. Ez a kiadás az adatkapcsolat átállítása, nem a 100 pontos program lezárása.
+
+## V18: saját forward eredmények romlásfigyelése
+
+- Azonos kísérlethez és konfigurációhoz tartozó, ellenőrzött lezárt ügyletekből 10/30/60/120 elemű ablakok.
+- Tőzsde és route szerinti elkülönítés; 10 veszteséges eredmény figyelmeztetés, legalább 30 eredmény és negatív nettó expectancy + PF < 0,9 kockázatemelési tiltás.
+- A korábbi globális automatikus retirement küszöbe megmarad. A route-szintű tiltás akkor is hat, ha az összesített múlt pozitív.
+- A decay állapot, ablakmetrikák és a szomszédos 30-as ablakok összehasonlítása a registry-ben és a checksumos tanulási mentésben tárolódik. A standardizedDrop diagnosztika, nem kalibrált szignifikanciateszt.
+- A `/api/models/registry` a meglévő megfigyelési API; `entries[].prospectiveEvidence.decay`, `venueDecay`, `routeDecay`.
+- Nem szükséges új adatbázis-migráció. A PostgreSQL-beállítások és a felület elrendezése megmaradnak.
+- GitHub Actions: Node 20 és 24 ellenőrzés, regresszió és izolált indítás/újraindítás. Munkahelyről az Actions fülön, telepítés nélkül követhető. Ez nem élő adatbázis- vagy tőzsdei próba.
 
 ## Átállás DigitalOceanra
 
