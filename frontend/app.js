@@ -1,4 +1,4 @@
-const FRONTEND_VERSION = 'v199_187_17';
+const FRONTEND_VERSION = 'v199_187_18';
 const FRONTEND_BUILD = 'adaptive-exit-ai-core';
 const STABLE_STATE_CACHE_KEY = 'nexus-v199-stable-dashboard-v1';
 function loadStableDashboardState() {

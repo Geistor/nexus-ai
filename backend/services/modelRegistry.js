@@ -286,6 +286,34 @@ function restoreCheckpointOrders(current=[],incoming=[],closedTrades=[]) {
   return [...rows.values()];
 }
 
+// Input is already identity-filtered by forwardRowsForEntry. Windows are counts
+// of closed trades, not wall-clock time; idle periods cannot fabricate decay.
+function forwardDecaySummary(rows=[]) {
+  const {metricSummary,netPnlOf}=require('./strategyScorecard');
+  const asOf=rows.length?Date.parse(rows.at(-1).closedAt || rows.at(-1).time):0;
+  const windows=[10,30,60,120].map(size=>{
+    const sample=rows.slice(-size),metrics=metricSummary(sample,size,{nowMs:asOf});
+    return {size,complete:sample.length===size,metrics};
+  });
+  const short=windows[0],recent=windows[1];
+  const degraded=recent.complete && recent.metrics.expectancyUsd<0 && recent.metrics.profitFactor<0.9;
+  const warning=short.complete && short.metrics.expectancyUsd<0 && short.metrics.profitFactor<0.9;
+  let comparison=null;
+  if(rows.length>=60){
+    const latest=rows.slice(-30).map(netPnlOf),baseline=rows.slice(-60,-30).map(netPnlOf);
+    const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
+    const variance=a=>a.reduce((s,x)=>s+(x-mean(a))**2,0)/(a.length-1);
+    const drop=mean(baseline)-mean(latest),standardError=Math.sqrt(variance(latest)/30+variance(baseline)/30);
+    comparison={baselineRows:30,recentRows:30,expectancyDropUsd:drop,standardError,
+      standardizedDrop:standardError>0?drop/standardError:null,
+      // Diagnostic only: serially dependent trading outcomes are not a calibrated significance test.
+      diagnosticOnly:true};
+  }
+  return {version:1,rows:rows.length,lastTradeAt:rows.at(-1)?.closedAt || rows.at(-1)?.time || null,
+    status:degraded?'degraded':warning?'watch':recent.complete?'stable':'insufficient-evidence',
+    riskIncreaseBlocked:degraded,windows,comparison};
+}
+
 function updateForwardEvidence(projectRoot,trades=[]) {
   const {metricSummary,verifiedTrade}=require('./strategyScorecard');
   const registry=readRegistry(projectRoot);let changed=false;
@@ -294,19 +322,22 @@ function updateForwardEvidence(projectRoot,trades=[]) {
     if(entry.status==='retired')continue;
     const rows=forwardRowsForEntry(entry,[...(byFingerprint.get(entry.artifactFingerprint) || []),...asArray(entry.paperRuntime?.trades)]);
     const evidenceFingerprint=fingerprint(rows.map(t=>({id:t.id || t.orderId,time:t.closedAt || t.time,netPnl:t.netPnl ?? t.pnl ?? t.realizedPnl,venue:t.requestedVenue || t.venue,symbol:t.symbol,regime:t.regime || t.marketRegime,side:t.side,strategy:t.strategyKey || t.strategy || t.agentStrategy || t.strategyFamily,experimentId:t.experimentId,configFingerprint:t.configFingerprint})));
-    if(evidenceFingerprint===entry.prospectiveEvidence?.evidenceFingerprint && entry.prospectiveEvidence?.routeMetrics)continue;
+    if(evidenceFingerprint===entry.prospectiveEvidence?.evidenceFingerprint && entry.prospectiveEvidence?.routeMetrics && entry.prospectiveEvidence?.decay?.version===1)continue;
     const metrics=metricSummary(rows,30,{nowMs:rows.length?Date.parse(rows.at(-1).closedAt || rows.at(-1).time):0});
     const passed=rows.length>=30 && metrics.expectancyUsd>0 && metrics.profitFactor>=1.15 && metrics.reliability>=0.5;
     const routeGroups={},venueGroups={};
     for(const t of rows){const v=String(t.requestedVenue || t.venue || '').toLowerCase();const k=[v,t.symbol,t.regime || t.marketRegime,t.side,t.strategyKey || t.strategy || t.agentStrategy || t.strategyFamily].map(x=>String(x || 'UNKNOWN').toUpperCase()).join(' | ');(routeGroups[k] ||= []).push(t);(venueGroups[v] ||= []).push(t);}
     const summarizeGroups=groups=>Object.fromEntries(Object.entries(groups).map(([key,value])=>[key,metricSummary(value,30,{nowMs:rows.length?Date.parse(rows.at(-1).closedAt || rows.at(-1).time):0})]));
-    entry.prospectiveEvidence={routeMetrics:summarizeGroups(routeGroups),venueMetrics:summarizeGroups(venueGroups),source:'candidate-tagged-forward-paper',rows:rows.length,metrics,passed,artifactFingerprint:entry.artifactFingerprint,evidenceFingerprint};
+    const decay=forwardDecaySummary(rows);
+    const venueDecay=Object.fromEntries(Object.entries(venueGroups).map(([k,v])=>[k,forwardDecaySummary(v)]));
+    const routeDecay=Object.fromEntries(Object.entries(routeGroups).map(([k,v])=>[k,forwardDecaySummary(v)]));
+    entry.prospectiveEvidence={decay,venueDecay,routeDecay,routeMetrics:summarizeGroups(routeGroups),venueMetrics:summarizeGroups(venueGroups),source:'candidate-tagged-forward-paper',rows:rows.length,metrics,passed,artifactFingerprint:entry.artifactFingerprint,evidenceFingerprint};
     entry.riskIncreaseEligible=passed;changed=true;
     if(passed && ['candidate','validated'].includes(entry.status)){
       entry.validationMetrics=normalizeMetrics(metrics);entry.validationDecision=validationDecision(entry,{minTrades:30,minProfitFactor:1.15,minExpectancyUsd:0,minReliability:0.5});
       if(entry.validationDecision.passed && entry.status!=='validated'){entry.status='validated';entry.validatedAt=now();addEvent(registry,'forward-candidate-validated',{modelId:entry.id,rows:rows.length});}
     }
-    if((entry.status==='champion' || entry.paperRuntime) && rows.length>=30){const recent=metricSummary(rows.slice(-30),30);if(recent.expectancyUsd<0 && recent.profitFactor<0.9){entry.status='retired';entry.retirementReason='forward-strategy-decay';entry.retiredAt=now();if(registry.championId===entry.id)registry.championId=null;addEvent(registry,'strategy-decay-retired',{modelId:entry.id,metrics:recent});}}
+    if((entry.status==='champion' || entry.paperRuntime) && rows.length>=30){const recent=decay.windows[1].metrics;if(decay.riskIncreaseBlocked){entry.status='retired';entry.retirementReason='forward-strategy-decay';entry.retiredAt=now();if(registry.championId===entry.id)registry.championId=null;addEvent(registry,'strategy-decay-retired',{modelId:entry.id,metrics:recent,decay});}}
   }
   return changed?writeRegistry(projectRoot,registry):registry;
 }
@@ -317,11 +348,13 @@ function registryPromotionPolicy(registry={},input={}) {
   const route=c?.prospectiveEvidence?.routeMetrics?.[key],venueEvidence=c?.prospectiveEvidence?.venueMetrics?.[venue];
   const qualified=m=>m && m.trades>=30 && m.expectancyUsd>0 && m.profitFactor>=1.15 && m.reliability>=0.5;
   const sameMode=c?.provenance?.mode===mode;
-  const eligible=c?.status==='champion' && c?.riskIncreaseEligible===true && c?.prospectiveEvidence?.passed===true && sameMode && qualified(venueEvidence) && (!input.strategy || qualified(route));
+  const decay=c?.prospectiveEvidence?.routeDecay?.[key] || c?.prospectiveEvidence?.venueDecay?.[venue] || null;
+  const decayBlocked=c?.prospectiveEvidence?.venueDecay?.[venue]?.riskIncreaseBlocked===true || decay?.riskIncreaseBlocked===true;
+  const eligible=!decayBlocked && c?.status==='champion' && c?.riskIncreaseEligible===true && c?.prospectiveEvidence?.passed===true && sameMode && qualified(venueEvidence) && (!input.strategy || qualified(route));
   return {version:'common-registry-promotion-policy-1',registryChampionId:c?.id || null,experimentId:registry.experimentId || null,
     riskIncreaseEligible:!!eligible,scope:eligible?'own-venue-route-forward-qualified':'shadow-paper-ranking-only',
     shadowCannotPromoteRisk:true,mode,venue,routeKey:key,routeEvidence:route || null,venueEvidence:venueEvidence || null,
-    reason:eligible?'own-forward-net-positive':'missing-own-mode-venue-route-forward-proof'};
+    decay,decayBlocked,reason:eligible?'own-forward-net-positive':decayBlocked?'own-forward-strategy-decay':'missing-own-mode-venue-route-forward-proof'};
 }
 function openRevalidationTrial(projectRoot,id) {
   const r=readRegistry(projectRoot),parent=entryById(r,id);
@@ -371,7 +404,7 @@ function restoreDurableBundle(projectRoot,bundle,localBundle=null,options={}) {
   return {ok:true,restored:true,registry:remote,config:bundle.config,checksum:bundle.checksum};
 }
 module.exports = {
-  paperRuntimeSummary,forwardRowsForEntry,restoreCheckpointOrders,registryPromotionPolicy,openRevalidationTrial,exportDurableBundle,verifyBundle,restoreDurableBundle,updateForwardEvidence,
+  paperRuntimeSummary,forwardRowsForEntry,forwardDecaySummary,restoreCheckpointOrders,registryPromotionPolicy,openRevalidationTrial,exportDurableBundle,verifyBundle,restoreDurableBundle,updateForwardEvidence,
   fingerprint,
   readRegistry,
   writeRegistry,

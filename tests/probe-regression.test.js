@@ -2004,3 +2004,44 @@ test('v17 migrated PostgreSQL history, runtime state, learning revisions and dat
   const total=await pg.query('SELECT count(*)::int AS total FROM public.trade_journal');
   assert.equal(total.rows[0].total,2);
 });
+
+test('v18 decay windows distinguish insufficient, watch and sustained net loss without time drift',()=>{
+ const {forwardDecaySummary}=require('../backend/services/modelRegistry');
+ const rows=Array.from({length:120},(_,i)=>({id:String(i),netPnl:i<90?2:-1,closedAt:new Date(1700000000000+i*60000).toISOString(),verified:true}));
+ assert.equal(forwardDecaySummary(rows.slice(0,9)).status,'insufficient-evidence');
+ const watch=forwardDecaySummary(rows.slice(-10));assert.equal(watch.status,'watch');assert.equal(watch.riskIncreaseBlocked,false);
+ const loss=forwardDecaySummary(rows);assert.equal(loss.status,'degraded');assert.equal(loss.riskIncreaseBlocked,true);
+ assert.deepEqual(loss.windows.map(w=>w.metrics.trades),[10,30,60,120]);
+ assert.equal(loss.comparison.expectancyDropUsd,3);assert.equal(loss.comparison.standardizedDrop,null);
+ assert.equal(loss.comparison.diagnosticOnly,true);assert.deepEqual(loss,forwardDecaySummary(rows));
+});
+test('v18 profitable history cannot hide own route deterioration or contaminate another venue',()=>{
+ const {registryPromotionPolicy}=require('../backend/services/modelRegistry');
+ const metrics={trades:100,expectancyUsd:1,profitFactor:2,reliability:1};
+ const key='BINANCE | BTC/USDT | BULL | BUY | TREND';
+ const champion={id:'champ',status:'champion',riskIncreaseEligible:true,provenance:{mode:'paper'},prospectiveEvidence:{passed:true,venueMetrics:{binance:metrics,bybit:metrics},routeMetrics:{[key]:metrics},routeDecay:{[key]:{status:'degraded',riskIncreaseBlocked:true}}}};
+ const registry={champion};
+ const input={venue:'binance',mode:'paper',symbol:'BTC/USDT',regime:'BULL',side:'BUY',strategy:'TREND'};
+ const blocked=registryPromotionPolicy(registry,input);assert.equal(blocked.riskIncreaseEligible,false);assert.equal(blocked.reason,'own-forward-strategy-decay');
+ assert.equal(registryPromotionPolicy(registry,{venue:'bybit',mode:'paper'}).riskIncreaseEligible,true);
+ champion.prospectiveEvidence.routeDecay[key]={status:'watch',riskIncreaseBlocked:false};
+ assert.equal(registryPromotionPolicy(registry,input).riskIncreaseEligible,true);
+ champion.prospectiveEvidence.venueDecay={binance:{riskIncreaseBlocked:true}};
+ assert.equal(registryPromotionPolicy(registry,input).riskIncreaseEligible,false);
+});
+test('v18 own-experiment decay survives registry and bundle restart, rejects wrong identities and updates corrections',t=>{
+ const r=require('../backend/services/modelRegistry'),{buildCandidate}=require('../backend/services/continuousRetraining'),dir=v13Temp(t);
+ const e=r.registerCandidate(dir,buildCandidate(v13Rows(),{mode:'paper'})).entry;
+ const start=Date.parse('2026-05-01');
+ const rows=v13Rows(60).map((x,i)=>({...x,id:'decay-'+i,netPnl:i<30?2:-1,candidateFingerprint:e.artifactFingerprint,experimentId:e.id,configFingerprint:e.configFingerprint,openedAt:new Date(start+i*3600000).toISOString(),closedAt:new Date(start+i*3600000+60000).toISOString()}));
+ const wrong=rows.map(x=>({...x,id:'wrong-'+x.id,experimentId:'other',netPnl:1000}));
+ r.updateForwardEvidence(dir,[...rows,...rows,...wrong]);
+ let current=r.readRegistry(dir).entries.find(x=>x.id===e.id);
+ assert.equal(current.prospectiveEvidence.decay.rows,60);assert.equal(current.prospectiveEvidence.decay.status,'degraded');
+ const bundle=r.exportDurableBundle(dir,{});assert.ok(r.verifyBundle(bundle));
+ const restored=v13Temp(t);assert.ok(r.restoreDurableBundle(restored,bundle).ok);
+ assert.deepEqual(r.readRegistry(restored).entries.find(x=>x.id===e.id).prospectiveEvidence.decay,current.prospectiveEvidence.decay);
+ r.updateForwardEvidence(dir,rows.map(x=>({...x,netPnl:1})));
+ current=r.readRegistry(dir).entries.find(x=>x.id===e.id);assert.equal(current.prospectiveEvidence.decay.status,'stable');
+ const revision=r.readRegistry(dir).revision;r.updateForwardEvidence(dir,rows.map(x=>({...x,netPnl:1})));assert.equal(r.readRegistry(dir).revision,revision);
+});

@@ -1,3 +1,5 @@
+V18 kiegészítés (2026-11-19): a 36. pont többablakos, saját kísérleti eredményekből számolt romlásfigyelést kapott; a 37. pont retirement-auditja megőrzi az ablakmetrikákat. A 36/37 állapota RÉSZLEGES marad az üzemi validációig. V18 tesztek: decay ablakok, tőzsde/route kockázatemelési tiltás, idegen kísérletek és duplikátumok kizárása, PnL-korrekció és checksumos visszatöltés. Az eredeti 100 követelmény és azonosító alább változatlan.
+
 # NEXUS AI – eredeti 100 pontos ellenőrzési mátrix, v199_187_16
 
 Az eredeti 100 azonosító, követelmény és elfogadási cél a v15 projektmátrixból változatlanul megmaradt; a felhasználó most csatolt listájával a sorszámok és célok egyeznek. Alap: GitHub main cf03a681b894375a24c34d61aa55506a5e0452f5 és azonos v15 ZIP, a mainből hiányzó CI-workflow visszaadva.

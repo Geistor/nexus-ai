@@ -1,9 +1,9 @@
 {
-  "version": "v199_187_17",
-  "build": "digitalocean-postgres",
-  "date": "2026-11-10",
+  "version": "v199_187_18",
+  "build": "forward-decay-observability",
+  "date": "2026-11-19",
   "node": "20.x",
   "entry": "server.js",
-  "notes": "DigitalOcean PostgreSQL database provider with preserved Supabase fallback, existing trading strategies and LIVE guard. The 100 requirements remain audited, not all complete.",
+  "notes": "Own-experiment multi-window decay with per-venue/route risk-increase veto and durable evidence; PostgreSQL retained.",
   "name": "adaptive-exit-ai-core-simulation-learning-microstructure"
 }
